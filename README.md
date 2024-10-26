@@ -1,5 +1,46 @@
 # INF1040 - Player de Música
 
-Libs necessarias estao em requeriments.txt (pip install -r requirements.txt)
-Crie um ambiente virtual na maquina (python3/python -m venv env)
-Trabalhem na branch develop, gerem sempre uma branch nova a partir da develop e vamos sempre dando merge nela, só após isso uma validação damos merge na main.
+## Descrição
+
+Este é o projeto do Player de Música para a disciplina INF1040. O projeto inclui um ambiente virtual Python e um conjunto de bibliotecas necessárias para executar o sistema.
+
+## Instalação e Configuração
+
+### Passo 1: Configurar Ambiente Virtual
+
+Windows:
+```bash
+python3 -m venv env
+.\env\Scripts\activate
+```
+Linux/MacOS
+```bash
+python3 -m venv env
+source env/bin/activate
+```
+
+
+### Passo 2: Instale as dependências
+
+As bibliotecas necessárias para o projeto estão listadas no arquivo `requirements.txt`. Use o comando abaixo para instalá-las:
+
+```bash
+pip install -r requirements.txt
+```
+
+## Estrutura de Branches
+
+Para gerenciar mudanças e garantir a organização do projeto, siga estas diretrizes ao trabalhar com branches:
+
+### 1. Trabalhe na Branch `develop`
+Utilize sempre a branch `develop` como ponto de partida para novas implementações e desenvolvimentos.
+
+### 2. Crie uma Nova Branch para Cada Funcionalidade
+Ao iniciar uma nova funcionalidade ou correção, crie uma branch específica a partir de `develop`. Nomeie a branch de forma descritiva para indicar a funcionalidade ou a correção que está sendo trabalhada.
+
+### 3. Finalize e Faça o Merge
+Após concluir o trabalho em uma branch de funcionalidade, faça o merge da nova branch para `develop`. Submeta as alterações para validação antes de prosseguir.
+
+### 4. Validação e Merge para `main`
+Somente após as validações e testes necessários, daremos merge da branch `develop` para a branch `main`. Isso garante que `main` sempre contenha uma versão estável e testada do projeto.
+
