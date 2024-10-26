@@ -1,12 +1,12 @@
-import os 
+import playlist
+import avaliacoes
+
 from mutagen import File
 from pathlib import Path
-import avaliacoes
-import playlist
+import json
+import os 
 
 
-def leJsonMusicas(dicionarioMusicas:dict):
-    pass
 
 def geraDicionarioDeMusicas():
     dicionarioMusicas = {}
@@ -122,8 +122,6 @@ def excluirMusica(nomeAutor: str, nomeDaMusica: str, dicionarioMusicas:dict):
     
     return resultado
 
-
-import json
 
 def leJsonMusicas(dicionarioMusicas: dict):
     resultado = {
