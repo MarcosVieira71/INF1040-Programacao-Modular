@@ -30,17 +30,14 @@ pip install -r requirements.txt
 
 ## Estrutura de Branches
 
-Para gerenciar mudanças e garantir a organização do projeto, siga estas diretrizes ao trabalhar com branches:
-
 ### 1. Trabalhe na Branch `develop`
-Utilize sempre a branch `develop` como ponto de partida para novas implementações e desenvolvimentos.
+Utilizem sempre a branch `develop` para trabalhar nas alterações do programa
 
 ### 2. Crie uma Nova Branch para Cada Funcionalidade
-Ao iniciar uma nova funcionalidade ou correção, crie uma branch específica a partir de `develop`. Nomeie a branch de forma descritiva para indicar a funcionalidade ou a correção que está sendo trabalhada.
+Criem uma branch específica a partir de `develop`. Nomeie a branch de forma descritiva para indicar a funcionalidade ou a correção que está sendo trabalhada.
 
 ### 3. Finalize e Faça o Merge
 Após concluir o trabalho em uma branch de funcionalidade, faça o merge da nova branch para `develop`. Submeta as alterações para validação antes de prosseguir.
 
 ### 4. Validação e Merge para `main`
-Somente após as validações e testes necessários, daremos merge da branch `develop` para a branch `main`. Isso garante que `main` sempre contenha uma versão estável e testada do projeto.
-
+Somente após as validações e testes necessários, daremos merge da branch `develop` para a branch `main`. Isso garante que `main` sempre contenha uma versão estável.
