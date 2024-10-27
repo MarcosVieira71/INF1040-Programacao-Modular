@@ -10,14 +10,11 @@ class TelaMusica(QWidget):
         # Criação do layout principal
         self.mainLayout = QVBoxLayout(self) 
 
-        # Criação da lista de músicas usando QListView e QStandardItemModel
         self.listView = QListView(self)
         self.model = QStandardItemModel(self.listView)
 
-        # Configurando o modelo no QListView
         self.listView.setModel(self.model)
 
-        # Adicionando o listView ao layout
         self.mainLayout.addWidget(self.listView)
 
         self.listView.setContextMenuPolicy(Qt.CustomContextMenu)
@@ -35,7 +32,7 @@ class TelaMusica(QWidget):
             deleteAction = QAction("Excluir", self)
             addToPlaylistAction = QAction("Adicionar a Playlist", self)
 
-            # Conectando ações a métodos (se necessário)
+            # Conectando ações a métodos
             playAction.triggered.connect(lambda: self.playMusic(index))
             deleteAction.triggered.connect(lambda: self.deleteMusic(index))
 
@@ -49,13 +46,12 @@ class TelaMusica(QWidget):
             # Criando ações para o menu de contexto geral (sem item selecionado)
             addAction = QAction("Adicionar Música", self)
 
-            # Conectando ações a métodos (se necessário)
+            # Conectando ações a métodos 
             addAction.triggered.connect(self.addMusic)
 
             # Adicionando ações ao menu de contexto geral
             contextMenu.addAction(addAction)
 
-        # Exibindo o menu de contexto
         contextMenu.exec(self.listView.mapToGlobal(position))
 
     def playMusic(self, index):
