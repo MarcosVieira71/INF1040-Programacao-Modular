@@ -1,4 +1,4 @@
-from assets.TelaPrincipal_ui import Ui_MainWindow
+from assets.ui.TelaPrincipal_ui import Ui_MainWindow
 from TelaMusica import TelaMusica
 
 from PySide6.QtWidgets import QMainWindow
