@@ -6,9 +6,39 @@ from pathlib import Path
 import json
 import os 
 
+def leJsonMusicas(dicionarioMusicas: dict):
+    resultado = {
+        "codigo_retorno": 0,
+        "dicionarioMusicas": {}
+    }
 
+    try:
+        with open("musicas.json", "r", encoding="utf-8") as arquivo:
+            dicionarioMusicas.update(json.load(arquivo))
+            resultado["codigo_retorno"] = 1
+            resultado["dicionarioMusicas"] = dicionarioMusicas
+    except Exception as e:
+        print(f"Erro ao ler o arquivo: {e}")
 
+    return resultado
+
+def escreveJsonMusicas(dicionarioMusicas:dict):
+    resultado = {
+        "codigoRetorno": 0,
+        "mensagem": "Erro ao escrever o arquivo."
+    }
+    
+    try:
+        with open("musicas.json", "w", encoding="utf-8") as arquivo:
+            json.dump(dicionarioMusicas, arquivo, ensure_ascii=False, indent=4)
+            resultado["codigoRetorno"] = 1
+            resultado["mensagem"] = "Arquivo escrito com sucesso."
+    except Exception as e:
+        print(f"Erro ao escrever o arquivo: {e}")
+
+    return resultado
 def geraDicionarioDeMusicas():
+    global dicionarioMusicas
     dicionarioMusicas = {}
     retornoLeituraJson = leJsonMusicas(dicionarioMusicas)
     codigoDeRetorno = retornoLeituraJson["codigo_retorno"]
@@ -120,37 +150,4 @@ def excluirMusica(nomeAutor: str, nomeDaMusica: str, dicionarioMusicas:dict):
     resultado["codigoRetorno"] = 1
     resultado["mensagem"] = "Música excluída com sucesso."
     
-    return resultado
-
-
-def leJsonMusicas(dicionarioMusicas: dict):
-    resultado = {
-        "codigoRetorno": 0,
-        "dicionarioMusicas": {}
-    }
-
-    try:
-        with open("musicas.json", "r", encoding="utf-8") as arquivo:
-            dicionarioMusicas.update(json.load(arquivo))
-            resultado["codigoRetorno"] = 1
-            resultado["dicionarioMusicas"] = dicionarioMusicas
-    except Exception as e:
-        print(f"Erro ao ler o arquivo: {e}")
-
-    return resultado
-
-def escreveJsonMusicas(dicionarioMusicas:dict):
-    resultado = {
-        "codigoRetorno": 0,
-        "mensagem": "Erro ao escrever o arquivo."
-    }
-    
-    try:
-        with open("musicas.json", "w", encoding="utf-8") as arquivo:
-            json.dump(dicionarioMusicas, arquivo, ensure_ascii=False, indent=4)
-            resultado["codigoRetorno"] = 1
-            resultado["mensagem"] = "Arquivo escrito com sucesso."
-    except Exception as e:
-        print(f"Erro ao escrever o arquivo: {e}")
-
     return resultado
