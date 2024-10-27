@@ -8,6 +8,8 @@
 ## WARNING! All changes made in this file will be lost when recompiling UI file!
 ################################################################################
 
+from TelaMusica import TelaMusica
+
 from PySide6.QtCore import (QCoreApplication, QDate, QDateTime, QLocale,
     QMetaObject, QObject, QPoint, QRect,
     QSize, QTime, QUrl, Qt)
@@ -72,7 +74,7 @@ class Ui_MainWindow(object):
         self.home = QWidget()
         self.home.setObjectName(u"home")
         self.stackedWidget.addWidget(self.home)
-        self.musica = QWidget()
+        self.musica = TelaMusica()
         self.musica.setObjectName(u"musica")
         self.stackedWidget.addWidget(self.musica)
         self.playlist = QWidget()

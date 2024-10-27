@@ -1,4 +1,4 @@
-from view.TelaPrincipal import TelaPrincipal
+from TelaPrincipal import TelaPrincipal
 
 from PySide6.QtWidgets import QApplication
 import sys
