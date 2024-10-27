@@ -1,0 +1,9 @@
+<RCC>
+  <qresource>
+    <file>icons/clava.png</file>
+    <file>icons/power.png</file>
+    <file>icons/star.png</file>
+    <file>icons/dashboard icon.png</file>
+    <file>icons/playlist.png</file>
+  </qresource>
+</RCC>

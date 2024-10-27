@@ -1,24 +1,11 @@
-from TelaHome import TelaHome
-from TelaMusicas import TelaMusicas
+from assets.telaPrincipal_ui import Ui_MainWindow
 
-from PySide6.QtWidgets import QMainWindow, QStackedWidget
+from PySide6.QtWidgets import QMainWindow
 
 
-class TelaPrincipal(QMainWindow):
+class TelaPrincipal(QMainWindow, Ui_MainWindow):
     def __init__(self):
         super().__init__()
+        self.setupUi(self)
         self.setWindowTitle("Music Player")
         self.resize(800, 600)
-
-        self.stackedWidget = QStackedWidget(self)
-        self.setCentralWidget(self.stackedWidget)
-
-        # Adicionando telas
-        self.tela_principal = TelaHome(self.navegaPara)
-        self.tela_musicas = TelaMusicas(self.navegaPara)
-
-        self.stackedWidget.addWidget(self.tela_principal)
-        self.stackedWidget.addWidget(self.tela_musicas)
-
-    def navegaPara(self, index):
-        self.stackedWidget.setCurrentIndex(index)
