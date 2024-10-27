@@ -42,6 +42,12 @@ Após concluir o trabalho em uma branch de funcionalidade, faça o merge da nova
 ### 4. Validação e Merge para `main`
 Somente após as validações e testes necessários, daremos merge da branch `develop` para a branch `main`. Isso garante que `main` sempre contenha uma versão estável.
 
+### 5. Testes do funcionamento da aplicação:
+Para testar o programa dentro de src usem o comando:
+```bash
+python -m view.app 
+```
+
 ## Ferramentas Úteis
 
 Estamos utilizando PySide6, um wrapper de Qt para fazer as telas da aplicação então é bom utilizar a ferramenta QtWidgets para trabalhar na elaboração delas:
