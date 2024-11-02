@@ -1,45 +1,14 @@
-import playlist
-import avaliacoes
+import modulos.playlist as playlist
+import modulos.avaliacoes as avaliacoes
 
 from mutagen import File
 from pathlib import Path
 import json
 import os 
 
-def leJsonMusicas(dicionarioMusicas: dict):
-    resultado = {
-        "codigo_retorno": 0,
-        "dicionarioMusicas": {}
-    }
+dicionarioMusicas = {}
 
-    try:
-        with open("musicas.json", "r", encoding="utf-8") as arquivo:
-            dicionarioMusicas.update(json.load(arquivo))
-            resultado["codigo_retorno"] = 1
-            resultado["dicionarioMusicas"] = dicionarioMusicas
-    except Exception as e:
-        print(f"Erro ao ler o arquivo: {e}")
-
-    return resultado
-
-def escreveJsonMusicas(dicionarioMusicas:dict):
-    resultado = {
-        "codigoRetorno": 0,
-        "mensagem": "Erro ao escrever o arquivo."
-    }
-    
-    try:
-        with open("musicas.json", "w", encoding="utf-8") as arquivo:
-            json.dump(dicionarioMusicas, arquivo, ensure_ascii=False, indent=4)
-            resultado["codigoRetorno"] = 1
-            resultado["mensagem"] = "Arquivo escrito com sucesso."
-    except Exception as e:
-        print(f"Erro ao escrever o arquivo: {e}")
-
-    return resultado
-def geraDicionarioDeMusicas():
-    global dicionarioMusicas
-    dicionarioMusicas = {}
+def geraDicionarioDeMusicas(dicionarioMusicas=dicionarioMusicas):
     retornoLeituraJson = leJsonMusicas(dicionarioMusicas)
     codigoDeRetorno = retornoLeituraJson["codigo_retorno"]
     mensagem = "Erro ao gerar dicionário usando o json" if not codigoDeRetorno else "Dicionário gerado com sucesso"
@@ -80,7 +49,7 @@ def extraiMetadadosMusicas(caminhoDoArquivo:str):
 
     return resultado
 
-def adicionarMusica(caminhoArquivo:str, dicionarioMusicas:dict):
+def adicionarMusica(caminhoArquivo:str, dicionarioMusicas=dicionarioMusicas):
     resultado = {        
         "codigo_retorno": 0,
         "mensagem": "Erro ao adicionar a música: arquivo inválido ou inexistente"
@@ -88,13 +57,15 @@ def adicionarMusica(caminhoArquivo:str, dicionarioMusicas:dict):
 
     retornoExtracaoMetadados = extraiMetadadosMusicas(caminhoArquivo)
     if(retornoExtracaoMetadados["codigo_retorno"]):
-        musica = retornoExtracaoMetadados["metadados"]
-        dicionarioMusicas[(musica["autor"], musica["nome"])] = musica
+        metadados = retornoExtracaoMetadados["metadados"]
+        dicionarioMusicas[(metadados["autor"], metadados["nome"])] = metadados
         resultado["codigo_retorno"] = 1
         resultado["mensagem"] = "Música adicionada com sucesso"
+        resultado["metadados_extraidos"] = metadados
     return resultado
  
-def verificaMusica(nomeAutor: str, nomeMusica: str, dicionarioMusicas: dict):
+def verificaMusica(nomeAutor: str, nomeMusica: str):
+    global dicionarioMusicas
     resultado = {
         "codigo_retorno": 0,
         "mensagem": "Música existe no dicionário"
@@ -106,7 +77,8 @@ def verificaMusica(nomeAutor: str, nomeMusica: str, dicionarioMusicas: dict):
         resultado["mensagem"] = "Música não existe no dicionário"
     return resultado  
 
-def encontrarMusica(nomeAutor: str, nomeMusica: str, dicionarioMusicas: dict):
+def encontrarMusica(nomeAutor: str, nomeMusica: str):
+    global dicionarioMusicas
     resultado = {
         "codigo_retorno": 0,
         "mensagem": "Música não encontrada",
@@ -122,32 +94,68 @@ def encontrarMusica(nomeAutor: str, nomeMusica: str, dicionarioMusicas: dict):
     return resultado    
 
 
-def excluirMusica(nomeAutor: str, nomeDaMusica: str, dicionarioMusicas:dict):
+def excluirMusica(nomeAutor: str, nomeDaMusica: str):
+    global dicionarioMusicas
     resultado = {
-        "codigoRetorno": 0,
+        "codigo_retorno": 0,
         "mensagem": "Música não existe."
     }
 
     verificaResultado = verificaMusica(nomeAutor, nomeDaMusica)
-    if verificaResultado["codigoRetorno"] == 0:
+    if verificaResultado["codigo_retorno"] == 0:
         return resultado  # Música não existe
 
     # Verifica se a música tem avaliação
     if avaliacoes.verificaAvaliacao(nomeAutor, nomeDaMusica):
-        resultado["codigoRetorno"] = -1
+        resultado["codigo_retorno"] = -1
         resultado["mensagem"] = "A música não pode ser excluída pois tem avaliações."
         return resultado
 
     # Verifica se a música está em uma playlist
     if playlist.verificaMusicaNaPlaylist(nomeAutor, nomeDaMusica):
-        resultado["codigoRetorno"] = -2
+        resultado["codigo_retorno"] = -2
         resultado["mensagem"] = "A música não pode ser excluída pois está em uma playlist."
         return resultado
 
     # Remove a música do dicionário
     chave = (nomeAutor, nomeDaMusica)
     del dicionarioMusicas[chave]
-    resultado["codigoRetorno"] = 1
+    resultado["codigo_retorno"] = 1
     resultado["mensagem"] = "Música excluída com sucesso."
     
+    return resultado
+
+
+def leJsonMusicas():
+    global dicionarioMusicas
+    resultado = {
+        "codigoRetorno": 0,
+        "dicionarioMusicas": {}
+    }
+
+    try:
+        with open("musicas.json", "r", encoding="utf-8") as arquivo:
+            dicionarioMusicas.update(json.load(arquivo))
+            resultado["codigoRetorno"] = 1
+            resultado["dicionarioMusicas"] = dicionarioMusicas
+    except Exception as e:
+        print(f"Erro ao ler o arquivo: {e}")
+
+    return resultado
+
+def escreveJsonMusicas():
+    global dicionarioMusicas
+    resultado = {
+        "codigoRetorno": 0,
+        "mensagem": "Erro ao escrever o arquivo."
+    }
+    
+    try:
+        with open("musicas.json", "w", encoding="utf-8") as arquivo:
+            json.dump(dicionarioMusicas, arquivo, ensure_ascii=False, indent=4)
+            resultado["codigoRetorno"] = 1
+            resultado["mensagem"] = "Arquivo escrito com sucesso."
+    except Exception as e:
+        print(f"Erro ao escrever o arquivo: {e}")
+
     return resultado

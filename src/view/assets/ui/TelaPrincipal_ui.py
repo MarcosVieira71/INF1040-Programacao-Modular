@@ -23,7 +23,7 @@ from PySide6.QtWidgets import (QApplication, QMainWindow, QMenu, QMenuBar,
     QStackedWidget, QStatusBar, QVBoxLayout, QWidget)
 
 class Ui_MainWindow(object):
-    def setupUi(self, MainWindow):
+    def setupUi(self, MainWindow, player):
         if not MainWindow.objectName():
             MainWindow.setObjectName(u"MainWindow")
         MainWindow.resize(800, 600)
@@ -74,7 +74,7 @@ class Ui_MainWindow(object):
         self.home = QWidget()
         self.home.setObjectName(u"home")
         self.stackedWidget.addWidget(self.home)
-        self.musica = TelaMusica()
+        self.musica = TelaMusica(player)
         self.musica.setObjectName(u"musica")
         self.stackedWidget.addWidget(self.musica)
         self.playlist = QWidget()

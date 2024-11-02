@@ -1,15 +1,20 @@
+import re
 
-from PySide6.QtWidgets import QListView, QMenu, QWidget, QVBoxLayout
+from modulos.musica import adicionarMusica, excluirMusica, encontrarMusica, dicionarioMusicas
+
+
+from PySide6.QtWidgets import QListView, QMenu, QWidget, QVBoxLayout, QFileDialog
 from PySide6.QtGui import QStandardItem, QStandardItemModel, QAction
+from PySide6.QtCore import Qt, QPoint, QUrl
 from PySide6.QtCore import Qt, QPoint
 
 class TelaMusica(QWidget):
-    def __init__(self):
+    def __init__(self, player):
         super().__init__()
-
         # Criação do layout principal
         self.mainLayout = QVBoxLayout(self) 
 
+        self.player = player
         self.listView = QListView(self)
         self.model = QStandardItemModel(self.listView)
 
@@ -47,7 +52,7 @@ class TelaMusica(QWidget):
             addAction = QAction("Adicionar Música", self)
 
             # Conectando ações a métodos 
-            addAction.triggered.connect(self.addMusic)
+            addAction.triggered.connect(self.abreNavegacaoArquivos)
 
             # Adicionando ações ao menu de contexto geral
             contextMenu.addAction(addAction)
@@ -56,16 +61,49 @@ class TelaMusica(QWidget):
 
     def playMusic(self, index):
         item = self.model.itemFromIndex(index)
-        print(f"Tocando: {item.text()}")
+        item_texto = item.text()
+        
+        padrao = r"Música: (.+?) - Autor: (.+?) -"
+        resultado = re.search(padrao, item_texto)
+        
+        if resultado:
+            nome_musica = resultado.group(1).strip()
+            autor = resultado.group(2).strip()
+            resultadoBusca = encontrarMusica(autor, nome_musica)
+            print(resultadoBusca)
+            if resultadoBusca["codigo_retorno"]:
+                musica = resultadoBusca["musica"]
+                self.player.setSource(QUrl.fromLocalFile(musica["caminho"]))
+                self.player.play()
+                print(f"Tocando: {nome_musica} - {autor}")
+            print(resultadoBusca["mensagem"])
 
     def deleteMusic(self, index):
-        self.model.removeRow(index.row())
-        print("Música excluída")
+        item_texto = self.model.itemFromIndex(index).text()
+        padrao = r"Música: (.+?) - Autor: (.+?) -"
+        resultado = re.search(padrao, item_texto)
+        
+        if resultado:
+            nome_musica = resultado.group(1).strip()
+            autor = resultado.group(2).strip()
+            
+            #print(nome_musica, autor)
+            
+            resultado_exclusao = excluirMusica(autor, nome_musica)
+            if resultado_exclusao["codigo_retorno"] == 1:
+                self.model.removeRow(index.row())
+            print(resultado_exclusao["mensagem"])
+        else:
+            print("Erro ao extrair o autor e o nome da música do item selecionado.")
 
-    def addMusic(self):
-        newItem = QStandardItem(f"Música {self.model.rowCount() + 1} - Autor: Exemplo Autor - Duração: 3:355")
-        newItem.setFlags(newItem.flags() & ~Qt.ItemIsEditable)  
-        self.model.appendRow(newItem)
-        print("Nova música adicionada")
-
-
+    def abreNavegacaoArquivos(self):
+        arquivoNome, _ = QFileDialog.getOpenFileName(self, "Selecionar Arquivo", "", "Arquivos .mp3 (*.mp3)")
+        resultadoAdicao = adicionarMusica(arquivoNome)
+        if resultadoAdicao["codigo_retorno"]:
+            metadadosMusica = resultadoAdicao["metadados_extraidos"]
+            item = QStandardItem(f"Música: {metadadosMusica['nome']} - Autor: {metadadosMusica['autor']} - Duração: {metadadosMusica['duracao']} segundos")
+            item.setFlags(item.flags() & ~Qt.ItemFlag.ItemIsEditable)
+            self.model.appendRow(item)
+            print("Nova música adicionada ao modelo")
+        else:
+            print(resultadoAdicao["mensagem"])
