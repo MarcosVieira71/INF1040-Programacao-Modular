@@ -64,8 +64,7 @@ def adicionarMusica(caminhoArquivo:str, dicionarioMusicas=dicionarioMusicas):
         resultado["metadados_extraidos"] = metadados
     return resultado
  
-def verificaMusica(nomeAutor: str, nomeMusica: str):
-    global dicionarioMusicas
+def verificaMusica(nomeAutor: str, nomeMusica: str, dicionarioMusicas=dicionarioMusicas):
     resultado = {
         "codigo_retorno": 0,
         "mensagem": "Música existe no dicionário"
@@ -77,8 +76,7 @@ def verificaMusica(nomeAutor: str, nomeMusica: str):
         resultado["mensagem"] = "Música não existe no dicionário"
     return resultado  
 
-def encontrarMusica(nomeAutor: str, nomeMusica: str):
-    global dicionarioMusicas
+def encontrarMusica(nomeAutor: str, nomeMusica: str, dicionarioMusicas=dicionarioMusicas):
     resultado = {
         "codigo_retorno": 0,
         "mensagem": "Música não encontrada",
@@ -94,8 +92,7 @@ def encontrarMusica(nomeAutor: str, nomeMusica: str):
     return resultado    
 
 
-def excluirMusica(nomeAutor: str, nomeDaMusica: str):
-    global dicionarioMusicas
+def excluirMusica(nomeAutor: str, nomeDaMusica: str, dicionarioMusicas=dicionarioMusicas):
     resultado = {
         "codigo_retorno": 0,
         "mensagem": "Música não existe."
@@ -126,8 +123,7 @@ def excluirMusica(nomeAutor: str, nomeDaMusica: str):
     return resultado
 
 
-def leJsonMusicas():
-    global dicionarioMusicas
+def leJsonMusicas(dicionarioMusicas=dicionarioMusicas):
     resultado = {
         "codigoRetorno": 0,
         "dicionarioMusicas": {}
@@ -143,8 +139,7 @@ def leJsonMusicas():
 
     return resultado
 
-def escreveJsonMusicas():
-    global dicionarioMusicas
+def escreveJsonMusicas(dicionarioMusicas=dicionarioMusicas):
     resultado = {
         "codigoRetorno": 0,
         "mensagem": "Erro ao escrever o arquivo."
