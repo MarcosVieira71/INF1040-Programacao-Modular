@@ -1,3 +1,5 @@
+from modulos.musica import escreveJsonMusicas
+
 from view.assets.ui.TelaPrincipal_ui import Ui_MainWindow
 from PySide6.QtMultimedia import QMediaPlayer
 from PySide6.QtWidgets import QMainWindow
@@ -28,7 +30,9 @@ class TelaPrincipal(QMainWindow, Ui_MainWindow):
     def navegaParaAvaliacoes(self):
         self.stackedWidget.setCurrentIndex(3)
     
-    
     def navegaParaPlaylist(self):
         self.stackedWidget.setCurrentIndex(2)
     
+    def closeEvent(self, event):
+        print(escreveJsonMusicas()["mensagem"])
+        super().closeEvent(event)
