@@ -1,5 +1,6 @@
 import modulos.playlist as playlist
 import modulos.avaliacoes as avaliacoes
+from modulos.auxiliarJson import *
 
 from mutagen import File
 from pathlib import Path
@@ -7,12 +8,6 @@ import json
 import os 
 
 dicionarioMusicas = {}
-
-def geraDicionarioDeMusicas(dicionarioMusicas=dicionarioMusicas):
-    retornoLeituraJson = leJsonMusicas(dicionarioMusicas)
-    codigoDeRetorno = retornoLeituraJson["codigo_retorno"]
-    mensagem = "Erro ao gerar dicionário usando o json" if not codigoDeRetorno else "Dicionário gerado com sucesso"
-    return {"codigo_retorno": codigoDeRetorno, "mensagem":mensagem, "dicionario_musicas": dicionarioMusicas}
 
 def verificaArquivo(caminhoDoArquivo: str):
     if os.path.isfile(caminhoDoArquivo):
@@ -123,21 +118,6 @@ def excluirMusica(nomeAutor: str, nomeDaMusica: str, dicionarioMusicas=dicionari
     return resultado
 
 
-def leJsonMusicas(dicionarioMusicas=dicionarioMusicas):
-    resultado = {
-        "codigoRetorno": 0,
-        "dicionarioMusicas": {}
-    }
-
-    try:
-        with open("musicas.json", "r", encoding="utf-8") as arquivo:
-            dicionarioMusicas.update(json.load(arquivo))
-            resultado["codigoRetorno"] = 1
-            resultado["dicionarioMusicas"] = dicionarioMusicas
-    except Exception as e:
-        print(f"Erro ao ler o arquivo: {e}")
-
-    return resultado
 
 def escreveJsonMusicas(dicionarioMusicas=dicionarioMusicas):
     resultado = {
@@ -146,6 +126,9 @@ def escreveJsonMusicas(dicionarioMusicas=dicionarioMusicas):
     }
     
     try:
+        # Converte chaves para string com prefixo indicando o tipo original
+        dicionarioMusicas = converteChavesParaString(dicionarioMusicas)
+        
         with open("musicas.json", "w", encoding="utf-8") as arquivo:
             json.dump(dicionarioMusicas, arquivo, ensure_ascii=False, indent=4)
             resultado["codigoRetorno"] = 1
@@ -154,3 +137,27 @@ def escreveJsonMusicas(dicionarioMusicas=dicionarioMusicas):
         print(f"Erro ao escrever o arquivo: {e}")
 
     return resultado
+
+def leJsonMusicas(dicionarioMusicas=dicionarioMusicas):
+    resultado = {
+        "codigoRetorno": 0,
+        "mensagem": "Erro ao ler o arquivo"
+    }
+
+    try:
+        with open("musicas.json", "r", encoding="utf-8") as arquivo:
+            leituraJson = json.load(arquivo)
+            dicionarioMusicas.clear()
+            dicionarioMusicas.update(reverterChavesParaTipoOriginal(leituraJson))
+            resultado["codigoRetorno"] = 1
+            resultado["mensagem"] = "Músicas obtidas com sucesso do arquivo"
+    except Exception as e:
+        print(f"Erro ao ler o arquivo: {e}")
+
+    return resultado
+
+def obtemMusicas(dicionarioMusicas=dicionarioMusicas):
+    if dicionarioMusicas:
+        return {"codigo_retorno": 1, "musicas": dicionarioMusicas, "mensagem":"Músicas obtidas com sucesso"}
+    return {"codigo_retorno": 0, "musicas": None, "mensagem":"Não foi possível obter as músicas"}
+
