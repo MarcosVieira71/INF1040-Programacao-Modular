@@ -13,7 +13,7 @@ def verificaArquivo(caminhoDoArquivo: str):
     if os.path.isfile(caminhoDoArquivo):
         if os.path.splitext(caminhoDoArquivo)[1].lower() == ".mp3":
             return {"codigo_retorno": 1, "mensagem": "Arquivo válido"}
-    return {"codigo_retorno": 0, "mensagem": "Arquivo inválido"}
+    return {"codigo_retorno": 0, "mensagem": "Arquivo inválido ou inexistente"}
 
 def extraiMetadadosMusicas(caminhoDoArquivo:str):
     resultado = {
@@ -47,7 +47,8 @@ def extraiMetadadosMusicas(caminhoDoArquivo:str):
 def adicionarMusica(caminhoArquivo:str, dicionarioMusicas=dicionarioMusicas):
     resultado = {        
         "codigo_retorno": 0,
-        "mensagem": "Erro ao adicionar a música: arquivo inválido ou inexistente"
+        "mensagem": "Erro ao adicionar a música: arquivo inválido ou inexistente",
+        "metadados_extraidos": {}
     }
 
     retornoExtracaoMetadados = extraiMetadadosMusicas(caminhoArquivo)
@@ -62,13 +63,13 @@ def adicionarMusica(caminhoArquivo:str, dicionarioMusicas=dicionarioMusicas):
 def verificaMusica(nomeAutor: str, nomeMusica: str, dicionarioMusicas=dicionarioMusicas):
     resultado = {
         "codigo_retorno": 0,
-        "mensagem": "Música existe no dicionário"
+        "mensagem": "Música não existe no dicionário"
     }
 
     chave = (nomeAutor, nomeMusica)
     if chave in dicionarioMusicas:
         resultado["codigo_retorno"] = 1
-        resultado["mensagem"] = "Música não existe no dicionário"
+        resultado["mensagem"] = "Música existe no dicionário"
     return resultado  
 
 def encontrarMusica(nomeAutor: str, nomeMusica: str, dicionarioMusicas=dicionarioMusicas):
@@ -121,38 +122,39 @@ def excluirMusica(nomeAutor: str, nomeDaMusica: str, dicionarioMusicas=dicionari
 
 def escreveJsonMusicas(dicionarioMusicas=dicionarioMusicas):
     resultado = {
-        "codigoRetorno": 0,
+        "codigo_retorno": 0,
         "mensagem": "Erro ao escrever o arquivo."
     }
     
     try:
-        # Converte chaves para string com prefixo indicando o tipo original
+        os.makedirs("src/jsons", exist_ok=True)
+
         dicionarioMusicas = converteChavesParaString(dicionarioMusicas)
         
-        with open("musicas.json", "w", encoding="utf-8") as arquivo:
+        with open("src/jsons/musicas.json", "w", encoding="utf-8") as arquivo:
             json.dump(dicionarioMusicas, arquivo, ensure_ascii=False, indent=4)
-            resultado["codigoRetorno"] = 1
+            resultado["codigo_retorno"] = 1
             resultado["mensagem"] = "Arquivo escrito com sucesso."
     except Exception as e:
-        print(f"Erro ao escrever o arquivo: {e}")
-
+        pass
+    
     return resultado
 
 def leJsonMusicas(dicionarioMusicas=dicionarioMusicas):
     resultado = {
-        "codigoRetorno": 0,
+        "codigo_retorno": 0,
         "mensagem": "Erro ao ler o arquivo"
     }
 
     try:
-        with open("musicas.json", "r", encoding="utf-8") as arquivo:
+        with open("src/jsons/musicas.json", "r", encoding="utf-8") as arquivo:
             leituraJson = json.load(arquivo)
             dicionarioMusicas.clear()
             dicionarioMusicas.update(reverterChavesParaTipoOriginal(leituraJson))
-            resultado["codigoRetorno"] = 1
+            resultado["codigo_retorno"] = 1
             resultado["mensagem"] = "Músicas obtidas com sucesso do arquivo"
     except Exception as e:
-        print(f"Erro ao ler o arquivo: {e}")
+        pass
 
     return resultado
 
