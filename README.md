@@ -54,3 +54,8 @@ Estamos utilizando PySide6, um wrapper de Qt para fazer as telas da aplicação 
 Download disponível em: https://www.qt.io/download-qt-installer
 
 
+## Como executar os testes unitários: 
+Na raiz do projeto utilize o comando:
+```bash
+pytest -vv  src/test
+```

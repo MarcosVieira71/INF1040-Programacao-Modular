@@ -22,31 +22,31 @@ def test_ExtraiMetadadosMusicaValido():
     }
     assert resultado == {'codigo_retorno': 1, 'mensagem': 'Metadados extraídos com sucesso', "metadados": metadados_corretos}
 
-def testarExtraiMetadadosMusicaInvalido():
+def test_ExtraiMetadadosMusicaInvalido():
     resultado = extraiMetadadosMusicas("src/test/musicas_teste/arquivo_invalido.txt")
     assert resultado == {'codigo_retorno': 0, 'mensagem': 'Arquivo inválido ou inexistente', "metadados": {}}
 
-def testaradicionarMusicaSucesso():
+def test_adicionarMusicaSucesso():
     dicionarioMusicas = {}
     resultado = adicionarMusica("src/test/musicas_teste/11 - Max Coveri - Running in the 90's.mp3", dicionarioMusicas)
     metadados_corretos = extraiMetadadosMusicas("src/test/musicas_teste/11 - Max Coveri - Running in the 90's.mp3")["metadados"]
     assert resultado == {'codigo_retorno': 1, 'mensagem': 'Música adicionada com sucesso', "metadados_extraidos": metadados_corretos}
     assert len(dicionarioMusicas) == 1
 
-def testaradicionarMusicaArquivoInvalido():
+def test_adicionarMusicaArquivoInvalido():
     dicionarioMusicas = {}
     resultado = adicionarMusica("src/test/musicas_teste/arquivo_invalido.txt", dicionarioMusicas)
     assert resultado == {'codigo_retorno': 0, 'mensagem': 'Erro ao adicionar a música: arquivo inválido ou inexistente', "metadados_extraidos": {}}
     assert dicionarioMusicas == {}
 
-def testarVerificaMusicaExistente():
+def test_VerificaMusicaExistente():
     dicionarioMusicas = {}
     adicionarMusica("src/test/musicas_teste/11 - Max Coveri - Running in the 90's.mp3", dicionarioMusicas)
     resultado = verificaMusica("Desconhecido", "11 - Max Coveri - Running in the 90's", dicionarioMusicas)
     assert resultado == {'codigo_retorno': 1, 'mensagem': 'Música existe no dicionário'}
 
 
-def testarVerificaMusicaInexistente():
+def test_VerificaMusicaInexistente():
     dicionarioMusicas = {}
     resultado = verificaMusica("Autor", "MusicaInexistente", dicionarioMusicas)
     assert resultado == {'codigo_retorno': 0, 'mensagem': 'Música não existe no dicionário'}
