@@ -18,6 +18,7 @@ def criarAvaliacao(nomeAutor: str, nomeMusica: str, nota: int, texto: str, dicio
         chave = (nomeAutor, nomeMusica)
         if chave in dicionarioAvaliacoes:
             resultado["mensagem"] = "Avaliação já existente para esta música"
+            resultado["codigo_retorno"] = -1
             return resultado
         dicionarioAvaliacoes[chave] = {
             "nota": nota,

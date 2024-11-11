@@ -1,7 +1,7 @@
 import re
 
 from modulos.musica import adicionarMusica, excluirMusica, encontrarMusica, leJsonMusicas, obtemMusicas
-from modulos.avaliacoes import criarAvaliacao
+from modulos.avaliacoes import criarAvaliacao, atualizaAvaliacao, dicionarioAvaliacoes
 from view.DialogoReview import DialogoReview
 
 from PySide6.QtWidgets import QListView, QMenu, QWidget, QVBoxLayout, QFileDialog, QDialog, QMessageBox
@@ -112,5 +112,23 @@ class TelaMusica(QWidget):
             avaliacaoTexto, nota = dialog.getReviewData()
             nomeAutor, nomeMusica = self.extraiNomesDoModel(index)
             retornoCriacao = criarAvaliacao(nomeAutor=nomeAutor, nomeMusica=nomeMusica, nota=nota, texto=avaliacaoTexto)
-            if retornoCriacao["codigo_retorno"] == 1:
-                QMessageBox.information(self, "Aviso", retornoCriacao["mensagem"])
+            if retornoCriacao["codigo_retorno"] == -1:
+                self.updateReviewDialog(nomeAutor, nomeMusica, nota, avaliacaoTexto)
+            else:
+                QMessageBox.warning(self, "Aviso", retornoCriacao["mensagem"])
+    
+    
+    def updateReviewDialog(self, nomeAutor, nomeMusica, nota, avaliacaoTexto):
+        updateDialog = QMessageBox(self)
+        updateDialog.setIcon(QMessageBox.Question)
+        updateDialog.setWindowTitle("Aviso")
+        updateDialog.setText("Deseja atualizar a avaliação existente?")
+        updateDialog.setStandardButtons(QMessageBox.Yes | QMessageBox.No)
+        updateDialog.setDefaultButton(QMessageBox.No)
+        
+        resposta = updateDialog.exec()
+        if resposta == QMessageBox.Yes:
+            retornoAtualizacao = atualizaAvaliacao(nomeAutor=nomeAutor, nomeMusica=nomeMusica,  nota=nota, texto=avaliacaoTexto)
+            if retornoAtualizacao["codigo_retorno"] == 1:
+                QMessageBox.information(self, "Aviso", retornoAtualizacao["mensagem"])
+        updateDialog.close()
