@@ -1,8 +1,10 @@
 import re
 
-from modulos.musica import adicionarMusica, excluirMusica, encontrarMusica, leJsonMusicas, obtemMusicas, dicionarioMusicas
+from modulos.musica import adicionarMusica, excluirMusica, encontrarMusica, leJsonMusicas, obtemMusicas
+from modulos.avaliacoes import criarAvaliacao
+from view.DialogoReview import DialogoReview
 
-from PySide6.QtWidgets import QListView, QMenu, QWidget, QVBoxLayout, QFileDialog
+from PySide6.QtWidgets import QListView, QMenu, QWidget, QVBoxLayout, QFileDialog, QDialog, QMessageBox
 from PySide6.QtGui import QStandardItem, QStandardItemModel, QAction
 from PySide6.QtCore import Qt, QPoint, QUrl
 
@@ -31,16 +33,19 @@ class TelaMusica(QWidget):
             playAction = QAction("Tocar", self)
             deleteAction = QAction("Excluir", self)
             addToPlaylistAction = QAction("Adicionar a Playlist", self)
+            addToReviewsAction = QAction("Adicionar uma review", self)
 
             # Conectando ações a métodos
             playAction.triggered.connect(lambda: self.playMusic(index))
             deleteAction.triggered.connect(lambda: self.deleteMusic(index))
+            addToReviewsAction.triggered.connect(lambda: self.openReviewDialog(index))
 
             # Adicionando ações ao menu de contexto do item
             contextMenu.addAction(playAction)
             contextMenu.addAction(deleteAction)
             contextMenu.addSeparator()  
             contextMenu.addAction(addToPlaylistAction)
+            contextMenu.addAction(addToReviewsAction)
                         
         else:
             # Criando ações para o menu de contexto geral (sem item selecionado)
@@ -66,10 +71,10 @@ class TelaMusica(QWidget):
 
     def deleteMusic(self, index):
         autor, nomeMusica = self.extraiNomesDoModel(index)
-        resultado_exclusao = excluirMusica(autor, nomeMusica)
-        if resultado_exclusao["codigo_retorno"] == 1:
+        resultadoExclusao = excluirMusica(autor, nomeMusica)
+        if resultadoExclusao["codigo_retorno"] == 1:
             self.model.removeRow(index.row())
-        print(resultado_exclusao["mensagem"])
+        QMessageBox.information(self, "Aviso", resultadoExclusao["mensagem"])
 
     def addMusic(self):
         arquivoNome, _ = QFileDialog.getOpenFileName(self, "Selecionar Arquivo", "", "Arquivos .mp3 (*.mp3)")
@@ -77,7 +82,7 @@ class TelaMusica(QWidget):
         if resultadoAdicao["codigo_retorno"]:
             metadadosMusica = resultadoAdicao["metadados_extraidos"]
             self.adicionaItemModel(metadadosMusica=metadadosMusica)
-        print(resultadoAdicao["mensagem"])
+        QMessageBox.information(self, "Aviso", resultadoAdicao["mensagem"])
     
     def adicionaItemModel(self, metadadosMusica):
         nomeMusica, nomeAutor, duracao = metadadosMusica["nome"], metadadosMusica["autor"], metadadosMusica["duracao"]
@@ -101,3 +106,11 @@ class TelaMusica(QWidget):
             for musica in dicionarioMusicas.values():
                 self.adicionaItemModel(musica)
     
+    def openReviewDialog(self, index):
+        dialog = DialogoReview(self)
+        if dialog.exec() == QDialog.Accepted:
+            avaliacaoTexto, nota = dialog.getReviewData()
+            nomeAutor, nomeMusica = self.extraiNomesDoModel(index)
+            retornoCriacao = criarAvaliacao(nomeAutor=nomeAutor, nomeMusica=nomeMusica, nota=nota, texto=avaliacaoTexto)
+            if retornoCriacao["codigo_retorno"] == 1:
+                QMessageBox.information(self, "Aviso", retornoCriacao["mensagem"])

@@ -1,21 +1,19 @@
-import modulos.playlist as playlist
-import modulos.musica as musica
 from modulos.auxiliarJson import *
-from modulos.musica import verificaMusica
+
 import json
 import os
 
 dicionarioAvaliacoes={}
 
-
 def criarAvaliacao(nomeAutor: str, nomeMusica: str, nota: int, texto: str, dicionarioAvaliacoes=dicionarioAvaliacoes):
+    from modulos.musica import verificaMusica
     resultado = {
         "codigo_retorno": 0,
         "mensagem": "Erro ao criar a avaliação",
         "avaliacao": {}
     }
 
-    verifica_musica = verificaMusica(nomeAutor, nomeMusica,dicionarioAvaliacoes=dicionarioAvaliacoes)
+    verifica_musica = verificaMusica(nomeAutor, nomeMusica)
     if verifica_musica["codigo_retorno"] == 1:  
         chave = (nomeAutor, nomeMusica)
         if chave in dicionarioAvaliacoes:
@@ -47,7 +45,6 @@ def verificaAvaliacao(nomeAutor: str, nomeMusica: str, dicionarioAvaliacoes=dici
     resultado["codigo_retorno"]=1
     resultado["mensagem"] = "Avaliação encontrada"
   return resultado
-
 
 
 def excluirAvaliacao(nomeAutor: str, nomeMusica: str, dicionarioAvaliacoes=dicionarioAvaliacoes):
@@ -114,6 +111,7 @@ def escreveJsonAvaliacoes(dicionarioAvaliacoes=dicionarioAvaliacoes):
     except Exception as e:
         pass
     return resultado
+
 def geraStringAvaliacao(nomeAutor: str, nomeMusica: str, dicionarioAvaliacoes=dicionarioAvaliacoes):
     resultado = {
         "codigo_retorno": 0,
