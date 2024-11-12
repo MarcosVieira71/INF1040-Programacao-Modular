@@ -70,8 +70,8 @@ def excluirAvaliacao(nomeAutor: str, nomeMusica: str, dicionarioAvaliacoes=dicio
 # e uma mensagem indicando que a avaliação não foi encontrada.
 # Caso a chave (nome do autor, nome da música) não exista no dicionário, a função não lança uma exceção, mas retorna uma mensagem de erro.
 
-# Acoplamento: ?
-# Condições de Acoplamento: ?
+# Acoplamento: 
+# Condições de Acoplamento: 
 # A função depende de `dicionarioAvaliacoes` como um dicionário em que as chaves são tuplas (nome do autor, nome da música) 
 # e os valores são dicionários contendo as chaves "nota" e "texto".
 

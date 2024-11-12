@@ -1,8 +1,10 @@
 import re
 
 from modulos.musica import adicionarMusica, excluirMusica, encontrarMusica, leJsonMusicas, obtemMusicas
-from modulos.avaliacoes import criarAvaliacao, atualizaAvaliacao, verificaAvaliacao, excluirAvaliacao, leJsonAvaliacoes, dicionarioAvaliacoes
-from view.DialogoReview import DialogoReview
+from modulos.avaliacoes import criarAvaliacao, atualizaAvaliacao, excluirAvaliacao, leJsonAvaliacoes, dicionarioAvaliacoes
+from view.DialogoAvaliacoes import DialogoAvaliacoes
+from view.MenuContextoMusicas import MenuContexto
+from view.PerguntaAtualizarAvaliacao import PerguntaAtualizarAvaliacao
 
 from PySide6.QtWidgets import QListView, QMenu, QWidget, QVBoxLayout, QFileDialog, QDialog, QMessageBox
 from PySide6.QtGui import QStandardItem, QStandardItemModel, QAction
@@ -25,17 +27,14 @@ class TelaMusica(QWidget):
         self.preencheModel()
 
     def showContextMenu(self, position: QPoint):
-        contextMenu = QMenu(self)
+        contextMenu = MenuContexto(self)
         index = self.listView.indexAt(position)
-
         if index.isValid():
-            self.setupContextMenuValidIndex(index, contextMenu)
+            autor, musica = self.extraiNomesDoModel(index)
+            contextMenu.opcaoIndexValido(autor, musica, index)
 
         else:
-            # Criando ações para o menu de contexto geral (sem item selecionado)
-            addAction = QAction("Adicionar Música", self)
-            addAction.triggered.connect(self.addMusic)
-            contextMenu.addAction(addAction)
+            contextMenu.opcaoIndexInvalido()
 
         contextMenu.exec(self.listView.mapToGlobal(position))
 
@@ -45,7 +44,6 @@ class TelaMusica(QWidget):
         if resultadoBusca["codigo_retorno"]:
             musica = resultadoBusca["musica"]
             self.player.setSource(QUrl.fromLocalFile(musica["caminho"]))
-            self.player.play()
             print(f"Tocando: {nomeMusica} - {autor}")
         print(resultadoBusca["mensagem"])
 
@@ -82,62 +80,21 @@ class TelaMusica(QWidget):
         resultadoObterMusicas = obtemMusicas()
         if resultadoObterMusicas["codigo_retorno"]:
             dicionarioMusicas = resultadoObterMusicas["musicas"]  # Acessa o dicionário de músicas
-            
             for musica in dicionarioMusicas.values():
                 self.adicionaItemModel(musica)
     
     def openReviewDialog(self, index):
-        dialog = DialogoReview(self)
+        dialog = DialogoAvaliacoes(self)
         if dialog.exec() == QDialog.Accepted:
             avaliacaoTexto, nota = dialog.getReviewData()
             nomeAutor, nomeMusica = self.extraiNomesDoModel(index)
             retornoCriacao = criarAvaliacao(nomeAutor=nomeAutor, nomeMusica=nomeMusica, nota=nota, texto=avaliacaoTexto)
             if retornoCriacao["codigo_retorno"] == -1:
-                self.updateReviewDialog(nomeAutor, nomeMusica, nota, avaliacaoTexto)
+                PerguntaAtualizarAvaliacao(self, nomeAutor, nomeMusica, nota, avaliacaoTexto)
             else:
-                QMessageBox.warning(self, "Aviso", retornoCriacao["mensagem"])
-    
-    
-    def updateReviewDialog(self, nomeAutor, nomeMusica, nota, avaliacaoTexto):
-        updateDialog = QMessageBox(self)
-        updateDialog.setIcon(QMessageBox.Question)
-        updateDialog.setWindowTitle("Aviso")
-        updateDialog.setText("Deseja atualizar a avaliação existente?")
-        updateDialog.setStandardButtons(QMessageBox.Yes | QMessageBox.No)
-        updateDialog.setDefaultButton(QMessageBox.No)
-        
-        resposta = updateDialog.exec()
-        if resposta == QMessageBox.Yes:
-            retornoAtualizacao = atualizaAvaliacao(nomeAutor=nomeAutor, nomeMusica=nomeMusica,  nota=nota, texto=avaliacaoTexto)
-            QMessageBox.information(self, "Aviso", retornoAtualizacao["mensagem"])
-        updateDialog.close()
-
+                QMessageBox.information(self, "Aviso", retornoCriacao["mensagem"])
+       
     def deleteReview(self, index):
         autor, musica = self.extraiNomesDoModel(index)
         retornoExclusaoAvaliacao = excluirAvaliacao(autor, musica)
         QMessageBox.information(self, "Aviso", retornoExclusaoAvaliacao["mensagem"])
-
-    def setupContextMenuValidIndex(self, index, contextMenu):
-        autor, musica = self.extraiNomesDoModel(index)
-        playAction = QAction("Tocar", self)
-        deleteAction = QAction("Excluir", self)
-        addToPlaylistAction = QAction("Adicionar a Playlist", self)
-        addToReviewsAction = QAction("Adicionar avaliação", self)
-
-        playAction.triggered.connect(lambda: self.playMusic(index))
-        deleteAction.triggered.connect(lambda: self.deleteMusic(index))
-        addToReviewsAction.triggered.connect(lambda: self.openReviewDialog(index))
-
-        contextMenu.addAction(playAction)
-        contextMenu.addAction(deleteAction)
-        contextMenu.addSeparator()  
-        contextMenu.addAction(addToPlaylistAction)
-        contextMenu.addSeparator()
-        contextMenu.addAction(addToReviewsAction)
-        if verificaAvaliacao(autor, musica)["codigo_retorno"]: self.setupAvaliacoesOptions(contextMenu, addToReviewsAction, index)
-        
-    def setupAvaliacoesOptions(self,contextMenu, addReviewAction, index):
-        addReviewAction.setText("Atualizar avaliação")
-        deleteReviewAction = QAction("Excluir avaliação", self)
-        deleteReviewAction.triggered.connect(lambda:self.deleteReview(index))
-        contextMenu.addAction(deleteReviewAction)
