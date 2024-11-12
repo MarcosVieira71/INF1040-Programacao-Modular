@@ -61,6 +61,28 @@ def excluirAvaliacao(nomeAutor: str, nomeMusica: str, dicionarioAvaliacoes=dicio
 
   return resultado
 
+
+# Descrição:
+# Esta função recebe como parâmetros o nome do autor (`nomeAutor`), o nome da música (`nomeMusica`), uma nova nota 
+# (`nota`) e o novo texto da avaliação (`texto`). A função verifica se existe uma entrada correspondente no `dicionarioAvaliacoes` 
+# para o par (nome do autor, nome da música). Caso a entrada exista, a função atualiza a nota e o texto da avaliação e retorna 
+# um dicionário com `codigo_retorno` 1 e uma mensagem de sucesso. Caso contrário, retorna um dicionário com `codigo_retorno` 0 
+# e uma mensagem indicando que a avaliação não foi encontrada.
+# Caso a chave (nome do autor, nome da música) não exista no dicionário, a função não lança uma exceção, mas retorna uma mensagem de erro.
+
+# Acoplamento: ?
+# Condições de Acoplamento: ?
+# A função depende de `dicionarioAvaliacoes` como um dicionário em que as chaves são tuplas (nome do autor, nome da música) 
+# e os valores são dicionários contendo as chaves "nota" e "texto".
+
+# Hipóteses:
+# - A função assume que `dicionarioAvaliacoes` segue a estrutura esperada.
+# - A nota e o texto fornecidos devem ser do tipo `int` e `str`, respectivamente, para evitar problemas de tipo.
+
+# Interface com o Usuário:
+# A função não interage diretamente com o usuário, mas retorna um dicionário com `codigo_retorno` e `mensagem`, que podem 
+# ser utilizados por uma interface para exibir feedback ao usuário.
+
 def atualizaAvaliacao(nomeAutor: str, nomeMusica: str, nota: int, texto: str, dicionarioAvaliacoes=dicionarioAvaliacoes):
     resultado={
         "codigo_retorno":0,
