@@ -71,6 +71,13 @@ def excluirAvaliacao(nomeAutor: str, nomeMusica: str, dicionarioAvaliacoes=dicio
 # Caso a chave (nome do autor, nome da música) não exista no dicionário, a função não lança uma exceção, mas retorna uma mensagem de erro.
 
 # Acoplamento: 
+# A função assume que vai receber strings nos parâmetros nomeAutor, nomeMusica e texto sem restrição de tamanho. A nota é um inteiro e assume
+# que vai ter valor entre 0 e 5. O parâmetro dicionarioAvaliacoes espera receber um dicionario com avaliacoes num formato em que as chaves
+# são tuplas com duas strings nelas.  
+#  Os retornos são sempre em forma de dicionário com campos de "codigo_retorno" e "mensagem", sendo o codigo de retorno um valor inteiro
+# 0 ou 1 (1 para representar que tudo funcionou de acordo e 0 para indicar que houve um erro na execução da função).  A mensagem só informa o que aconteceu durante
+# a execução da função.
+# 
 # Condições de Acoplamento: 
 # A função depende de `dicionarioAvaliacoes` como um dicionário em que as chaves são tuplas (nome do autor, nome da música) 
 # e os valores são dicionários contendo as chaves "nota" e "texto".
