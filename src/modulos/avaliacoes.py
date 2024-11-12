@@ -85,7 +85,8 @@ def leJsonAvaliacoes(dicionarioAvaliacoes=dicionarioAvaliacoes):
         with open("src/jsons/avaliacoes.json", "r", encoding="utf-8") as arquivo:
             dados = json.load(arquivo)
             dicionarioAvaliacoes.clear()
-            dicionarioAvaliacoes.update(dados)
+            
+            dicionarioAvaliacoes.update(reverterChavesParaTipoOriginal(dados))
 
             resultado["codigo_retorno"] = 1
             resultado["mensagem"] = "Avaliações obtidas com sucesso"
@@ -102,7 +103,6 @@ def escreveJsonAvaliacoes(dicionarioAvaliacoes=dicionarioAvaliacoes):
     }
     try:
         os.makedirs("src/jsons", exist_ok=True)
-        # Falar sobre com o Marcos
         dicionarioAvaliacoes = converteChavesParaString(dicionarioAvaliacoes)
         
         with open("src/jsons/avaliacoes.json", "w", encoding="utf-8") as arquivo:
@@ -112,6 +112,23 @@ def escreveJsonAvaliacoes(dicionarioAvaliacoes=dicionarioAvaliacoes):
     except Exception as e:
         pass
     return resultado
+
+
+
+# Descrição:
+# Esta função recebe como entrada o nome do autor (`nomeAutor`), o nome da música (`nomeMusica`), e um dicionário 
+# de avaliações (`dicionarioAvaliacoes`). A função busca uma avaliação correspondente ao par (nome do autor, nome da música) no 
+# dicionário. Se encontrada, retorna uma mensagem formatada com a avaliação e um código de retorno `1`. Caso contrário, 
+# retorna uma mensagem de erro e um código de retorno `0`.
+
+# Acoplamento: ?
+# Condições de Acoplamento: ?
+# Hipótese:
+# - O `dicionarioAvaliacoes` deve seguir a estrutura esperada para que a função funcione corretamente.
+
+# Interface com o Usuário:
+# A função não possui interação direta com o usuário final, mas fornece um dicionário com o código de retorno e a string da 
+# avaliação, que pode ser utilizado em interfaces de usuário para exibir mensagens de sucesso ou erro.
 
 def geraStringAvaliacao(nomeAutor: str, nomeMusica: str, dicionarioAvaliacoes=dicionarioAvaliacoes):
     resultado = {

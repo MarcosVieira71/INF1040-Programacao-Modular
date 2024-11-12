@@ -1,7 +1,7 @@
 import re
 
 from modulos.musica import adicionarMusica, excluirMusica, encontrarMusica, leJsonMusicas, obtemMusicas
-from modulos.avaliacoes import criarAvaliacao, atualizaAvaliacao, dicionarioAvaliacoes
+from modulos.avaliacoes import criarAvaliacao, atualizaAvaliacao, verificaAvaliacao, excluirAvaliacao, leJsonAvaliacoes, dicionarioAvaliacoes
 from view.DialogoReview import DialogoReview
 
 from PySide6.QtWidgets import QListView, QMenu, QWidget, QVBoxLayout, QFileDialog, QDialog, QMessageBox
@@ -11,7 +11,9 @@ from PySide6.QtCore import Qt, QPoint, QUrl
 class TelaMusica(QWidget):
     def __init__(self, player):
         super().__init__()
+        print(leJsonAvaliacoes()["mensagem"])
         print(leJsonMusicas()["mensagem"])
+        print(dicionarioAvaliacoes)
         self.mainLayout = QVBoxLayout(self) 
         self.player = player
         self.listView = QListView(self)
@@ -24,37 +26,15 @@ class TelaMusica(QWidget):
 
     def showContextMenu(self, position: QPoint):
         contextMenu = QMenu(self)
-
-        # Obtendo o índice do item clicado
         index = self.listView.indexAt(position)
 
         if index.isValid():
-            # Criando ações para o menu de contexto do item selecionado
-            playAction = QAction("Tocar", self)
-            deleteAction = QAction("Excluir", self)
-            addToPlaylistAction = QAction("Adicionar a Playlist", self)
-            addToReviewsAction = QAction("Adicionar uma review", self)
+            self.setupContextMenuValidIndex(index, contextMenu)
 
-            # Conectando ações a métodos
-            playAction.triggered.connect(lambda: self.playMusic(index))
-            deleteAction.triggered.connect(lambda: self.deleteMusic(index))
-            addToReviewsAction.triggered.connect(lambda: self.openReviewDialog(index))
-
-            # Adicionando ações ao menu de contexto do item
-            contextMenu.addAction(playAction)
-            contextMenu.addAction(deleteAction)
-            contextMenu.addSeparator()  
-            contextMenu.addAction(addToPlaylistAction)
-            contextMenu.addAction(addToReviewsAction)
-                        
         else:
             # Criando ações para o menu de contexto geral (sem item selecionado)
             addAction = QAction("Adicionar Música", self)
-
-            # Conectando ações a métodos 
             addAction.triggered.connect(self.addMusic)
-
-            # Adicionando ações ao menu de contexto geral
             contextMenu.addAction(addAction)
 
         contextMenu.exec(self.listView.mapToGlobal(position))
@@ -129,6 +109,35 @@ class TelaMusica(QWidget):
         resposta = updateDialog.exec()
         if resposta == QMessageBox.Yes:
             retornoAtualizacao = atualizaAvaliacao(nomeAutor=nomeAutor, nomeMusica=nomeMusica,  nota=nota, texto=avaliacaoTexto)
-            if retornoAtualizacao["codigo_retorno"] == 1:
-                QMessageBox.information(self, "Aviso", retornoAtualizacao["mensagem"])
+            QMessageBox.information(self, "Aviso", retornoAtualizacao["mensagem"])
         updateDialog.close()
+
+    def deleteReview(self, index):
+        autor, musica = self.extraiNomesDoModel(index)
+        retornoExclusaoAvaliacao = excluirAvaliacao(autor, musica)
+        QMessageBox.information(self, "Aviso", retornoExclusaoAvaliacao["mensagem"])
+
+    def setupContextMenuValidIndex(self, index, contextMenu):
+        autor, musica = self.extraiNomesDoModel(index)
+        playAction = QAction("Tocar", self)
+        deleteAction = QAction("Excluir", self)
+        addToPlaylistAction = QAction("Adicionar a Playlist", self)
+        addToReviewsAction = QAction("Adicionar avaliação", self)
+
+        playAction.triggered.connect(lambda: self.playMusic(index))
+        deleteAction.triggered.connect(lambda: self.deleteMusic(index))
+        addToReviewsAction.triggered.connect(lambda: self.openReviewDialog(index))
+
+        contextMenu.addAction(playAction)
+        contextMenu.addAction(deleteAction)
+        contextMenu.addSeparator()  
+        contextMenu.addAction(addToPlaylistAction)
+        contextMenu.addSeparator()
+        contextMenu.addAction(addToReviewsAction)
+        if verificaAvaliacao(autor, musica)["codigo_retorno"]: self.setupAvaliacoesOptions(contextMenu, addToReviewsAction, index)
+        
+    def setupAvaliacoesOptions(self,contextMenu, addReviewAction, index):
+        addReviewAction.setText("Atualizar avaliação")
+        deleteReviewAction = QAction("Excluir avaliação", self)
+        deleteReviewAction.triggered.connect(lambda:self.deleteReview(index))
+        contextMenu.addAction(deleteReviewAction)
