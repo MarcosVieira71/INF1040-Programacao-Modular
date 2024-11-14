@@ -23,7 +23,7 @@ from PySide6.QtWidgets import (QApplication, QMainWindow, QMenu, QMenuBar,
     QStackedWidget, QStatusBar, QVBoxLayout, QWidget)
 
 class Ui_MainWindow(object):
-    def setupUi(self, MainWindow, player):
+    def setupUi(self, MainWindow):
         if not MainWindow.objectName():
             MainWindow.setObjectName(u"MainWindow")
         MainWindow.resize(800, 600)
@@ -64,8 +64,7 @@ class Ui_MainWindow(object):
         self.stackedWidget = QStackedWidget(self.centralwidget)
         self.stackedWidget.setObjectName(u"stackedWidget")
         self.stackedWidget.setGeometry(QRect(160, 20, 601, 461))
-
-        self.musica = TelaMusica(player)
+        self.musica = TelaMusica(MainWindow.player)
         self.musica.setObjectName(u"musica")
         self.stackedWidget.addWidget(self.musica)
         self.playlist = QWidget()
@@ -104,7 +103,7 @@ class Ui_MainWindow(object):
         MainWindow.setWindowTitle(QCoreApplication.translate("MainWindow", u"MainWindow", None))
         self.musicasButton.setText(QCoreApplication.translate("MainWindow", u"Musicas", None))
         self.playlistButton.setText(QCoreApplication.translate("MainWindow", u"Playlist", None))
-        self.playButton.setText(QCoreApplication.translate("MainWindow", u"Play", None))
+        self.playButton.setText(QCoreApplication.translate("MainWindow", u"Retomar", None))
         self.menuFile.setTitle(QCoreApplication.translate("MainWindow", u"M\u00fasicas", None))
         self.menuExportar.setTitle(QCoreApplication.translate("MainWindow", u"Exportar", None))
     # retranslateUi
