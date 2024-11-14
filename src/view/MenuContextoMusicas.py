@@ -8,29 +8,33 @@ class MenuContexto(QMenu):
 
     def opcaoIndexInvalido(self):
         addAction = QAction("Adicionar Música", self.parent())
-        addAction.triggered.connect(self.parent().addMusic)
+        addAction.triggered.connect(self.parent().acaoAdicionarMusica)
         self.addAction(addAction)
 
     def opcaoIndexValido(self, autor, musica, index):
-        playAction = QAction("Tocar", self.parent())
-        deleteAction = QAction("Excluir", self.parent())
+        tocarMusica = QAction("Tocar", self.parent())
+        deletarMusica = QAction("Excluir", self.parent())
         addToPlaylistAction = QAction("Adicionar a Playlist", self.parent())
-        addToReviewsAction = QAction("Adicionar avaliação", self.parent())
+        adicionarAvaliacao = QAction("Adicionar avaliação", self.parent())
 
-        playAction.triggered.connect(lambda: self.parent().playMusic(index))
-        deleteAction.triggered.connect(lambda: self.parent().deleteMusic(index))
-        addToReviewsAction.triggered.connect(lambda: self.parent().openReviewDialog(index))
+        tocarMusica.triggered.connect(lambda: self.parent().acaoTocarMusica(index))
+        deletarMusica.triggered.connect(lambda: self.parent().acaoDeletarMusica(index))
+        adicionarAvaliacao.triggered.connect(lambda: self.parent().abreDialogoAvaliacao(index))
 
-        self.addAction(playAction)
-        self.addAction(deleteAction)
+        self.addAction(tocarMusica)
+        self.addAction(deletarMusica)
         self.addSeparator()  
         self.addAction(addToPlaylistAction)
         self.addSeparator()
-        self.addAction(addToReviewsAction)
-        if verificaAvaliacao(autor, musica)["codigo_retorno"]: self.setupAvaliacoesOptions(self, addToReviewsAction, index)
+        self.addAction(adicionarAvaliacao)
+        if verificaAvaliacao(autor, musica)["codigo_retorno"]: self.setupAvaliacoesOptions(self, adicionarAvaliacao, index)
         
-    def setupAvaliacoesOptions(self,contextMenu, addReviewAction, index):
-        addReviewAction.setText("Atualizar avaliação")
-        deleteReviewAction = QAction("Excluir avaliação", self.parent())
-        deleteReviewAction.triggered.connect(lambda:self.parent().deleteReview(index))
-        contextMenu.addAction(deleteReviewAction)
+    def setupAvaliacoesOptions(self,contextMenu, adicionarAvaliacao, index):
+        adicionarAvaliacao.setText("Atualizar avaliação")
+        deletarAvaliacao = QAction("Excluir avaliação", self.parent())
+        deletarAvaliacao.triggered.connect(lambda:self.parent().acaoDeletarAvaliacao(index))
+
+        lerAvaliacao = QAction("Ler avaliação", self.parent())
+        lerAvaliacao.triggered.connect(lambda:self.parent().acaoLerAvaliacao(index))
+        self.addAction(lerAvaliacao)
+        contextMenu.addAction(deletarAvaliacao)

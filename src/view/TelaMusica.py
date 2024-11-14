@@ -1,13 +1,13 @@
 import re
 
 from modulos.musica import adicionarMusica, excluirMusica, encontrarMusica, leJsonMusicas, obtemMusicas
-from modulos.avaliacoes import criarAvaliacao, atualizaAvaliacao, excluirAvaliacao, leJsonAvaliacoes, dicionarioAvaliacoes
+from modulos.avaliacoes import criarAvaliacao, geraStringAvaliacao, excluirAvaliacao, leJsonAvaliacoes
 from view.DialogoAvaliacoes import DialogoAvaliacoes
 from view.MenuContextoMusicas import MenuContexto
 from view.PerguntaAtualizarAvaliacao import PerguntaAtualizarAvaliacao
 
-from PySide6.QtWidgets import QListView, QMenu, QWidget, QVBoxLayout, QFileDialog, QDialog, QMessageBox
-from PySide6.QtGui import QStandardItem, QStandardItemModel, QAction
+from PySide6.QtWidgets import QListView, QWidget, QVBoxLayout, QFileDialog, QDialog, QMessageBox, QPlainTextEdit
+from PySide6.QtGui import QStandardItem, QStandardItemModel
 from PySide6.QtCore import Qt, QPoint, QUrl
 
 class TelaMusica(QWidget):
@@ -15,7 +15,6 @@ class TelaMusica(QWidget):
         super().__init__()
         print(leJsonAvaliacoes()["mensagem"])
         print(leJsonMusicas()["mensagem"])
-        print(dicionarioAvaliacoes)
         self.mainLayout = QVBoxLayout(self) 
         self.player = player
         self.listView = QListView(self)
@@ -38,7 +37,7 @@ class TelaMusica(QWidget):
 
         contextMenu.exec(self.listView.mapToGlobal(position))
 
-    def playMusic(self, index):
+    def acaoTocarMusica(self, index):
         autor, nomeMusica = self.extraiNomesDoModel(index)
         resultadoBusca = encontrarMusica(autor, nomeMusica)
         if resultadoBusca["codigo_retorno"]:
@@ -47,14 +46,14 @@ class TelaMusica(QWidget):
             print(f"Tocando: {nomeMusica} - {autor}")
         print(resultadoBusca["mensagem"])
 
-    def deleteMusic(self, index):
+    def acaoDeletarMusica(self, index):
         autor, nomeMusica = self.extraiNomesDoModel(index)
         resultadoExclusao = excluirMusica(autor, nomeMusica)
         if resultadoExclusao["codigo_retorno"] == 1:
             self.model.removeRow(index.row())
         QMessageBox.information(self, "Aviso", resultadoExclusao["mensagem"])
 
-    def addMusic(self):
+    def acaoAdicionarMusica(self):
         arquivoNome, _ = QFileDialog.getOpenFileName(self, "Selecionar Arquivo", "", "Arquivos .mp3 (*.mp3)")
         resultadoAdicao = adicionarMusica(arquivoNome)
         if resultadoAdicao["codigo_retorno"]:
@@ -83,10 +82,10 @@ class TelaMusica(QWidget):
             for musica in dicionarioMusicas.values():
                 self.adicionaItemModel(musica)
     
-    def openReviewDialog(self, index):
+    def abreDialogoAvaliacao(self, index):
         dialog = DialogoAvaliacoes(self)
         if dialog.exec() == QDialog.Accepted:
-            avaliacaoTexto, nota = dialog.getReviewData()
+            avaliacaoTexto, nota = dialog.pegaInputAvaliacao()
             nomeAutor, nomeMusica = self.extraiNomesDoModel(index)
             retornoCriacao = criarAvaliacao(nomeAutor=nomeAutor, nomeMusica=nomeMusica, nota=nota, texto=avaliacaoTexto)
             if retornoCriacao["codigo_retorno"] == -1:
@@ -94,7 +93,22 @@ class TelaMusica(QWidget):
             else:
                 QMessageBox.information(self, "Aviso", retornoCriacao["mensagem"])
        
-    def deleteReview(self, index):
+    def acaoDeletarAvaliacao(self, index):
         autor, musica = self.extraiNomesDoModel(index)
         retornoExclusaoAvaliacao = excluirAvaliacao(autor, musica)
         QMessageBox.information(self, "Aviso", retornoExclusaoAvaliacao["mensagem"])
+
+    def acaoLerAvaliacao(self, index):
+        autor, musica = self.extraiNomesDoModel(index)
+        resultado = geraStringAvaliacao(autor, musica)
+        if resultado["codigo_retorno"]:
+            dialog = QDialog(self)
+            dialog.setWindowTitle("Avaliação")
+            layout = QVBoxLayout(dialog)        
+            text_edit = QPlainTextEdit(dialog)
+            text_edit.setPlainText(resultado["stringAvaliacao"])
+            text_edit.setReadOnly(True) 
+            layout.addWidget(text_edit)
+            dialog.setLayout(layout)
+            dialog.exec()
+        else: QMessageBox.warning(self, "Aviso!", resultado["mensagem"])

@@ -26,5 +26,5 @@ class DialogoAvaliacoes(QDialog):
         
         botaoConfirmar.clicked.connect(self.accept)
     
-    def getReviewData(self):
+    def pegaInputAvaliacao(self):
         return self.caixaTexto.toPlainText(), self.spinBoxAvaliacao.value()
