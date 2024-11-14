@@ -1,7 +1,7 @@
 import re
 
-from modulos.musica import adicionarMusica, excluirMusica, encontrarMusica, leJsonMusicas, obtemMusicas
-from modulos.avaliacoes import criarAvaliacao, geraStringAvaliacao, excluirAvaliacao, leJsonAvaliacoes
+from modulos.musica import adicionarMusica, excluirMusica, encontrarMusica, obtemMusicas
+from modulos.avaliacoes import criarAvaliacao, geraStringAvaliacao, excluirAvaliacao
 from view.DialogoAvaliacoes import DialogoAvaliacoes
 from view.MenuContextoMusicas import MenuContexto
 from view.PerguntaAtualizarAvaliacao import PerguntaAtualizarAvaliacao
@@ -13,8 +13,6 @@ from PySide6.QtCore import Qt, QPoint, QUrl
 class TelaMusica(QWidget):
     def __init__(self, player):
         super().__init__()
-        print(leJsonAvaliacoes()["mensagem"])
-        print(leJsonMusicas()["mensagem"])
         self.mainLayout = QVBoxLayout(self) 
         self.player = player
         self.listView = QListView(self)
@@ -42,8 +40,7 @@ class TelaMusica(QWidget):
         resultadoBusca = encontrarMusica(autor, nomeMusica)
         if resultadoBusca["codigo_retorno"]:
             musica = resultadoBusca["musica"]
-            self.player.setSource(QUrl.fromLocalFile(musica["caminho"]))
-            print(f"Tocando: {nomeMusica} - {autor}")
+            self.player.tocaMusica(musica["caminho"])
         print(resultadoBusca["mensagem"])
 
     def acaoDeletarMusica(self, index):
@@ -63,13 +60,13 @@ class TelaMusica(QWidget):
     
     def adicionaItemModel(self, metadadosMusica):
         nomeMusica, nomeAutor, duracao = metadadosMusica["nome"], metadadosMusica["autor"], metadadosMusica["duracao"]
-        item = QStandardItem(f"Música: {nomeMusica} - Autor: {nomeAutor} - Duração: {duracao} segundos")
+        item = QStandardItem(f"Música: {nomeMusica} | Autor: {nomeAutor} | Duração: {duracao} segundos")
         item.setFlags(item.flags() & ~Qt.ItemFlag.ItemIsEditable)
         self.model.appendRow(item)
 
     def extraiNomesDoModel(self, index):        
         item_texto = self.model.itemFromIndex(index).text()
-        padrao = r"Música: (.+?) - Autor: (.+?) -"
+        padrao = r"Música: (.+?) \| Autor: (.+?) \|"
         resultado = re.search(padrao, item_texto)
         nomeMusica = resultado.group(1).strip()
         autor = resultado.group(2).strip()

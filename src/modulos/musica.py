@@ -99,7 +99,7 @@ def excluirMusica(nomeAutor: str, nomeDaMusica: str, dicionarioMusicas=dicionari
         return resultado  # Música não existe
 
     # Verifica se a música tem avaliação
-    if avaliacoes.verificaAvaliacao(nomeAutor, nomeDaMusica):
+    if avaliacoes.verificaAvaliacao(nomeAutor, nomeDaMusica)["codigo_retorno"]:
         resultado["codigo_retorno"] = -1
         resultado["mensagem"] = "A música não pode ser excluída pois tem avaliações."
         return resultado
