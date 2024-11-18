@@ -62,13 +62,13 @@ def adicionarMusica(caminhoArquivo:str, dicionarioMusicas=dicionarioMusicas):
 def verificaMusica(nomeAutor: str, nomeMusica: str, dicionarioMusicas=dicionarioMusicas):
     resultado = {
         "codigo_retorno": 0,
-        "mensagem": "Música existe no dicionário"
+        "mensagem": "Música não existe no dicionário"
     }
 
     chave = (nomeAutor, nomeMusica)
     if chave in dicionarioMusicas:
         resultado["codigo_retorno"] = 1
-        resultado["mensagem"] = "Música não existe no dicionário"
+        resultado["mensagem"] = "Música existe no dicionário"
     return resultado  
 
 def encontrarMusica(nomeAutor: str, nomeMusica: str, dicionarioMusicas=dicionarioMusicas):
