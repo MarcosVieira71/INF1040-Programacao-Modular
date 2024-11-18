@@ -1,3 +1,6 @@
+from modulos.musica import escreveJsonMusicas
+from modulos.avaliacoes import escreveJsonAvaliacoes
+
 from view.Player import Player
 from view.assets.ui.TelaPrincipal_ui import Ui_MainWindow
 
@@ -23,3 +26,8 @@ class TelaPrincipal(QMainWindow, Ui_MainWindow):
 
     def navegaParaPlaylist(self):
         self.stackedWidget.setCurrentIndex(1)
+
+    def closeEvent(self, event):
+        print(escreveJsonMusicas()["mensagem"])
+        print(escreveJsonAvaliacoes()["mensagem"])
+        super().closeEvent(event)

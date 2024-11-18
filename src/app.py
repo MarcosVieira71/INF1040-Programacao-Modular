@@ -1,5 +1,5 @@
-from modulos.avaliacoes import leJsonAvaliacoes, escreveJsonAvaliacoes
-from modulos.musica import leJsonMusicas, escreveJsonMusicas
+from modulos.avaliacoes import leJsonAvaliacoes
+from modulos.musica import leJsonMusicas
 
 from view.TelaPrincipal import TelaPrincipal
 
@@ -15,6 +15,4 @@ class ProgramaPrincipal(QApplication):
 
 if __name__ == "__main__":
     app = ProgramaPrincipal()
-    print(escreveJsonMusicas()["mensagem"])
-    print(escreveJsonAvaliacoes()["mensagem"])
     sys.exit(app.exec())

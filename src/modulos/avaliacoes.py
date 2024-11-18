@@ -167,7 +167,7 @@ def geraStringAvaliacao(nomeAutor: str, nomeMusica: str, dicionarioAvaliacoes=di
 
     if chave in dicionarioAvaliacoes:
         avaliacao = dicionarioAvaliacoes[chave]
-        resultado["stringAvaliacao"] = f"Avaliação do {nomeMusica} do artista {nomeAutor}\n\n {avaliacao['texto']}"
+        resultado["stringAvaliacao"] = f"Avaliação do {nomeMusica} do artista {nomeAutor}\n\n {avaliacao['texto']} \n\n Nota: {avaliacao['nota']} estrelas"
         resultado["codigo_retorno"] = 1
     else:
         resultado["stringAvaliacao"] = "Erro: Avaliação não encontrada."
