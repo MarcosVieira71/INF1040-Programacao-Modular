@@ -9,7 +9,6 @@ def criarAvaliacao(nomeAutor: str, nomeMusica: str, nota: int, texto: str, dicio
     from modulos.musica import verificaMusica
     resultado = {
         "codigo_retorno": 0,
-        "mensagem": "Erro ao criar a avaliação",
         "avaliacao": {}
     }
 

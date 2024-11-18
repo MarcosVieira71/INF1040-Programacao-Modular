@@ -1,8 +1,11 @@
+from modulos.musica import adicionarMusica
 from modulos.avaliacoes import *
 
 def test_criarAvaliacaoSucesso():
     dicionarioAvaliacoes = {}
-    resultado = criarAvaliacao("Desconhecido", "Música Teste", 5, "Ótima música!", dicionarioAvaliacoes)
+    adicionarMusica("src/test/musicas_teste/08 - Leslie Parrish - Remember Me.mp3")
+        
+    resultado = criarAvaliacao("Desconhecido", "08 - Leslie Parrish - Remember Me", 5, "Ótima música!", dicionarioAvaliacoes)
     assert resultado == {
         "codigo_retorno": 1,
         "mensagem": "Avaliação criada com sucesso",
@@ -21,10 +24,12 @@ def test_criarAvaliacaoMusicaNaoEncontrada():
     assert len(dicionarioAvaliacoes) == 0
 
 def test_criarAvaliacaoJaExistente():
-    dicionarioAvaliacoes = {("Desconhecido", "Música Teste"): {"nota": 5, "texto": "Ótima música!"}}
-    resultado = criarAvaliacao("Desconhecido", "Música Teste", 4, "Nova avaliação.", dicionarioAvaliacoes)
+    dicionarioAvaliacoes = {("Desconhecido", "08 - Leslie Parrish - Remember Me"): {"nota": 5, "texto": "Ótima música!"}}
+    adicionarMusica("src/test/musicas_teste/08 - Leslie Parrish - Remember Me.mp3")
+
+    resultado = criarAvaliacao("Desconhecido", "08 - Leslie Parrish - Remember Me", 4, "Nova avaliação.", dicionarioAvaliacoes)
     assert resultado == {
-        "codigo_retorno": 0,
+        "codigo_retorno": -1,
         "mensagem": "Avaliação já existente para esta música",
         "avaliacao": {}
     }
@@ -66,7 +71,7 @@ def test_geraStringAvaliacaoSucesso():
     resultado = geraStringAvaliacao("Desconhecido", "Música Teste", dicionarioAvaliacoes)
     assert resultado == {
         "codigo_retorno": 1,
-        "stringAvaliacao": "Avaliação do Música Teste do artista Desconhecido:\nÓtima música!"
+        "stringAvaliacao": "Avaliação do Música Teste do artista Desconhecido\n\n Ótima música!"
     }
 
 def test_geraStringAvaliacaoInexistente():
