@@ -23,7 +23,7 @@ from PySide6.QtWidgets import (QApplication, QMainWindow, QMenu, QMenuBar,
     QStackedWidget, QStatusBar, QVBoxLayout, QWidget)
 
 class Ui_MainWindow(object):
-    def setupUi(self, MainWindow, player):
+    def setupUi(self, MainWindow):
         if not MainWindow.objectName():
             MainWindow.setObjectName(u"MainWindow")
         MainWindow.resize(800, 600)
@@ -36,10 +36,7 @@ class Ui_MainWindow(object):
 "QPushButton{background-color: \"orange\"}")
         self.verticalLayout = QVBoxLayout(self.widget)
         self.verticalLayout.setObjectName(u"verticalLayout")
-        self.homeButton = QPushButton(self.widget)
-        self.homeButton.setObjectName(u"homeButton")
 
-        self.verticalLayout.addWidget(self.homeButton)
 
         self.verticalSpacer = QSpacerItem(20, 120, QSizePolicy.Policy.Minimum, QSizePolicy.Policy.Expanding)
 
@@ -63,26 +60,16 @@ class Ui_MainWindow(object):
 
         self.verticalLayout.addItem(self.verticalSpacer_3)
 
-        self.avaliacoesButton = QPushButton(self.widget)
-        self.avaliacoesButton.setObjectName(u"avaliacoesButton")
-
-        self.verticalLayout.addWidget(self.avaliacoesButton)
 
         self.stackedWidget = QStackedWidget(self.centralwidget)
         self.stackedWidget.setObjectName(u"stackedWidget")
         self.stackedWidget.setGeometry(QRect(160, 20, 601, 461))
-        self.home = QWidget()
-        self.home.setObjectName(u"home")
-        self.stackedWidget.addWidget(self.home)
-        self.musica = TelaMusica(player)
+        self.musica = TelaMusica(MainWindow.player)
         self.musica.setObjectName(u"musica")
         self.stackedWidget.addWidget(self.musica)
         self.playlist = QWidget()
         self.playlist.setObjectName(u"playlist")
         self.stackedWidget.addWidget(self.playlist)
-        self.avaliacoes = QWidget()
-        self.avaliacoes.setObjectName(u"avaliacoes")
-        self.stackedWidget.addWidget(self.avaliacoes)
         self.horizontalSlider = QSlider(self.centralwidget)
         self.horizontalSlider.setObjectName(u"horizontalSlider")
         self.horizontalSlider.setGeometry(QRect(280, 490, 481, 51))
@@ -114,11 +101,9 @@ class Ui_MainWindow(object):
 
     def retranslateUi(self, MainWindow):
         MainWindow.setWindowTitle(QCoreApplication.translate("MainWindow", u"MainWindow", None))
-        self.homeButton.setText(QCoreApplication.translate("MainWindow", u"Home", None))
         self.musicasButton.setText(QCoreApplication.translate("MainWindow", u"Musicas", None))
         self.playlistButton.setText(QCoreApplication.translate("MainWindow", u"Playlist", None))
-        self.avaliacoesButton.setText(QCoreApplication.translate("MainWindow", u"Avaliacoes", None))
-        self.playButton.setText(QCoreApplication.translate("MainWindow", u"Play", None))
+        self.playButton.setText(QCoreApplication.translate("MainWindow", u"Retomar", None))
         self.menuFile.setTitle(QCoreApplication.translate("MainWindow", u"M\u00fasicas", None))
         self.menuExportar.setTitle(QCoreApplication.translate("MainWindow", u"Exportar", None))
     # retranslateUi
