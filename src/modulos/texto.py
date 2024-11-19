@@ -60,6 +60,7 @@ def geraTxtAvaliacoes(listaStrings, tipoCodificacao):
         else:
             return {"codigo_retorno": 0, "mensagem": resultadoConversao["mensagem"]}
     else:
-        os.remove(caminho_utf32)  
+        try: os.remove(caminho_utf32)
+        except: pass
         resultadoConversao = resultado
     return resultadoConversao
