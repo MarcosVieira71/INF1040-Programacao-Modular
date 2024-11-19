@@ -173,3 +173,19 @@ def geraStringAvaliacao(nomeAutor: str, nomeMusica: str, dicionarioAvaliacoes=di
         resultado["stringAvaliacao"] = "Erro: Avaliação não encontrada."
 
     return resultado
+
+def exportarAvaliacoes(tipoCodificacao, dicionarioAvaliacoes=dicionarioAvaliacoes):
+    from modulos.texto import geraTxtAvaliacoes
+    listaStrings = []
+    for autor, musica in dicionarioAvaliacoes.keys():
+        stringAvaliacaoRetorno = geraStringAvaliacao(autor, musica)  # Gera string da avaliação
+        if not stringAvaliacaoRetorno["codigo_retorno"]:
+            return {"codigo_retorno": -1, "mensagem": "Erro no formato de texto"}
+        listaStrings.append(stringAvaliacaoRetorno["stringAvaliacao"])
+
+    resultado = geraTxtAvaliacoes(listaStrings, tipoCodificacao)
+
+    if resultado["codigo_retorno"] == 1:
+        return {"codigo_retorno": 1, "mensagem": "Arquivo de avaliações escrito com sucesso"}
+    else:
+        return {"codigo_retorno": 0, "mensagem": "Erro ao escrever o arquivo de avaliações"}
