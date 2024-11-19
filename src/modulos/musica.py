@@ -7,6 +7,9 @@ from pathlib import Path
 import json
 import os 
 
+__all__ = ["verificaArquivo","extraiMetadadosMusicas", "adicionarMusica", "verificaMusica", "encontrarMusica", 
+           "excluirMusica", "escreveJsonMusicas", "leJsonMusicas", "obtemMusicas"]
+
 dicionarioMusicas = {}
 
 def verificaArquivo(caminhoDoArquivo: str):
@@ -117,7 +120,6 @@ def excluirMusica(nomeAutor: str, nomeDaMusica: str, dicionarioMusicas=dicionari
     resultado["mensagem"] = "Música excluída com sucesso."
     
     return resultado
-
 
 
 def escreveJsonMusicas(dicionarioMusicas=dicionarioMusicas):

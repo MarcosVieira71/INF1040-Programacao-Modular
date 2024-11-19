@@ -3,6 +3,9 @@ from modulos.auxiliarJson import *
 import json
 import os
 
+__all__ = ["criarAvaliacao","excluirAvaliacao", "atualizaAvaliacao", "leJsonAvaliacoes", "escreveJsonAvaliacoes", "exportarAvaliacoes", "geraStringAvaliacao", "verificaAvaliacao"]
+
+
 dicionarioAvaliacoes={}
 
 def criarAvaliacao(nomeAutor: str, nomeMusica: str, nota: int, texto: str, dicionarioAvaliacoes=dicionarioAvaliacoes):

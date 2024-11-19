@@ -71,7 +71,7 @@ def test_geraStringAvaliacaoSucesso():
     resultado = geraStringAvaliacao("Desconhecido", "Música Teste", dicionarioAvaliacoes)
     assert resultado == {
         "codigo_retorno": 1,
-        "stringAvaliacao": "Avaliação do Música Teste do artista Desconhecido\n\n Ótima música!"
+        "stringAvaliacao": "Avaliação do Música Teste do artista Desconhecido\n\n Ótima música! \n\n Nota: 5 estrelas"
     }
 
 def test_geraStringAvaliacaoInexistente():

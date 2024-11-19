@@ -2,6 +2,8 @@ import os
 import platform
 import ctypes
 
+__all__ = ["geraTxtAvaliacoes"]
+
 def retornaLibPath():
     sistemaOperacional = platform.system()
     if sistemaOperacional == "Windows":
