@@ -41,7 +41,6 @@ class TelaMusica(QWidget):
         if resultadoBusca["codigo_retorno"]:
             musica = resultadoBusca["musica"]
             self.player.tocaMusica(musica["caminho"])
-        print(resultadoBusca["mensagem"])
 
     def acaoDeletarMusica(self, index):
         autor, nomeMusica = self.extraiNomesDoModel(index)
@@ -59,19 +58,19 @@ class TelaMusica(QWidget):
         QMessageBox.information(self, "Aviso", resultadoAdicao["mensagem"])
     
     def adicionaItemModel(self, metadadosMusica):
-        nomeMusica, nomeAutor, duracao = metadadosMusica["nome"], metadadosMusica["autor"], metadadosMusica["duracao"]
-        item = QStandardItem(f"Música: {nomeMusica} | Autor: {nomeAutor} | Duração: {duracao} segundos")
+        nomeMusica, nomeAutor = metadadosMusica["nome"], metadadosMusica["autor"]
+        item = QStandardItem(f"Música: {nomeMusica} | Autor: {nomeAutor}")
         item.setFlags(item.flags() & ~Qt.ItemFlag.ItemIsEditable)
         self.model.appendRow(item)
 
     def extraiNomesDoModel(self, index):        
         item_texto = self.model.itemFromIndex(index).text()
-        padrao = r"Música: (.+?) \| Autor: (.+?) \|"
+        padrao = r"Música: (.+?) \| Autor: (.+)"
         resultado = re.search(padrao, item_texto)
         nomeMusica = resultado.group(1).strip()
         autor = resultado.group(2).strip()
         return autor, nomeMusica
-
+  
     def preencheModel(self):
         resultadoObterMusicas = obtemMusicas()
         if resultadoObterMusicas["codigo_retorno"]:

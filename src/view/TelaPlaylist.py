@@ -1,12 +1,13 @@
 import re
 
-from PySide6.QtWidgets import QListView, QWidget, QVBoxLayout, QDialog, QMessageBox, QInputDialog, QFileDialog
+from PySide6.QtWidgets import QListView, QWidget, QVBoxLayout, QLabel, QMessageBox, QInputDialog
 from PySide6.QtGui import QStandardItem, QStandardItemModel
 from PySide6.QtCore import Qt, QPoint
 
-from modulos.playlist import criarPlaylist, mudaNomePlaylist, excluirPlaylist, obterNomesPlaylists, dicionarioPlaylists
+from modulos.playlist import criarPlaylist, mudaNomePlaylist, excluirPlaylist, obterNomesPlaylists, dicionarioPlaylists, obtemMusicasDePlaylist
 from view.MenuContextoPlaylist import MenuContextoPlaylist
 from view.TelaComboMusicas import TelaComboMusicas
+from view.TelaVisualizarPlaylist import TelaVisualizarPlaylist
 
 class TelaPlaylist(QWidget):
     def __init__(self, player):
@@ -74,14 +75,10 @@ class TelaPlaylist(QWidget):
             self.model.removeRow(index.row())
         QMessageBox.information(self, "Aviso", resultadoExcluir["mensagem"])
 
-    def acaoVisualizarPlaylist(self, nomePlaylist):
-        dialog = QDialog(self)
-        dialog.setWindowTitle(f"Playlist: {nomePlaylist}")
-        layout = QVBoxLayout(dialog)
-        for musica in :
-            layout.addWidget(QLabel(f"{musica['nome']} - {musica['autor']}"))
-        dialog.setLayout(layout)
-        dialog.exec()
+    def acaoVisualizarPlaylist(self, index):
+        nomePlaylist = self.extraiNomeDoModel(index)
+        self.telaVisualizar = TelaVisualizarPlaylist(nomePlaylist, self.player)
+        self.telaVisualizar.show()
 
 
     def acaoAdicionarMusicaPlaylist(self, index):

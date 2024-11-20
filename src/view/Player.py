@@ -17,9 +17,19 @@ class Player(QMediaPlayer):
         self.playButton.clicked.connect(self.togglePlayPause)
         self.slider.sliderMoved.connect(self.setPosicao)
 
+        self.volumeSlider = self.parent().volumeSlider  # Referência ao slider vertical
+        self.volumeSlider.setRange(0, 100)
+        self.volumeSlider.setValue(self.audio_output.volume() * 100)  # Inicializa com o volume atual
+        self.volumeSlider.valueChanged.connect(self.setVolume)
+
     def tocaMusica(self, filepath):
         self.setSource(QUrl.fromLocalFile(filepath))
         self.play()
+
+    def setVolume(self, value):
+
+        self.audio_output.setVolume(value / 100)  # Converte para valor entre 0.0 e 1.0
+
 
     def updateSlider(self, position):
         self.slider.setValue(position)
