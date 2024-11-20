@@ -92,6 +92,8 @@ def encontrarMusica(nomeAutor: str, nomeMusica: str, dicionarioMusicas=dicionari
 
 
 def excluirMusica(nomeAutor: str, nomeDaMusica: str, dicionarioMusicas=dicionarioMusicas):
+    from modulos.avaliacoes import verificaAvaliacao
+    from modulos.playlist import obterNomesPlaylists, verificarMusicaNaPlaylist
     resultado = {
         "codigo_retorno": 0,
         "mensagem": "Música não existe."
@@ -102,16 +104,19 @@ def excluirMusica(nomeAutor: str, nomeDaMusica: str, dicionarioMusicas=dicionari
         return resultado  # Música não existe
 
     # Verifica se a música tem avaliação
-    if avaliacoes.verificaAvaliacao(nomeAutor, nomeDaMusica)["codigo_retorno"]:
+    if verificaAvaliacao(nomeAutor, nomeDaMusica)["codigo_retorno"]:
         resultado["codigo_retorno"] = -1
         resultado["mensagem"] = "A música não pode ser excluída pois tem avaliação."
         return resultado
 
     # Verifica se a música está em uma playlist
-    if playlist.verificaMusicaNaPlaylist(nomeAutor, nomeDaMusica):
-        resultado["codigo_retorno"] = -2
-        resultado["mensagem"] = "A música não pode ser excluída pois está em uma playlist."
-        return resultado
+    resultadoNomesPlaylists = obterNomesPlaylists()
+    if resultadoNomesPlaylists["codigo_retorno"]:
+        for nome in resultadoNomesPlaylists["nomes"]:
+            if verificarMusicaNaPlaylist(nome, nomeAutor, nomeDaMusica)["codigo_retorno"]:
+                resultado["codigo_retorno"] = -2
+                resultado["mensagem"] = "A música não pode ser excluída pois está em uma playlist."
+                return resultado
 
     # Remove a música do dicionário
     chave = (nomeAutor, nomeDaMusica)
