@@ -57,10 +57,15 @@ def adicionarMusica(caminhoArquivo:str, dicionarioMusicas=dicionarioMusicas):
     retornoExtracaoMetadados = extraiMetadadosMusicas(caminhoArquivo)
     if(retornoExtracaoMetadados["codigo_retorno"]):
         metadados = retornoExtracaoMetadados["metadados"]
-        dicionarioMusicas[(metadados["autor"], metadados["nome"])] = metadados
-        resultado["codigo_retorno"] = 1
-        resultado["mensagem"] = "Música adicionada com sucesso"
-        resultado["metadados_extraidos"] = metadados
+        resultadoVerificaMusica = verificaMusica(metadados["autor"], metadados["nome"])
+        if resultadoVerificaMusica["codigo_retorno"]:
+            resultado["codigo_retorno"] = -1
+            resultado["mensagem"] = "Música já existente."
+        else:
+            dicionarioMusicas[(metadados["autor"], metadados["nome"])] = metadados
+            resultado["codigo_retorno"] = 1
+            resultado["mensagem"] = "Música adicionada com sucesso"
+            resultado["metadados_extraidos"] = metadados
     return resultado
  
 def verificaMusica(nomeAutor: str, nomeMusica: str, dicionarioMusicas=dicionarioMusicas):

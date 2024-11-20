@@ -1,10 +1,12 @@
-import modulos.avaliacoes as avaliacoes
-import modulos.musica as musica
+
 from modulos.auxiliarJson import *
 import os
 import json
 
 dicionarioPlaylists = {}
+
+__all__ = ["criarPlaylist","adicionarMusicaNaPlaylist", "excluirMusicaDaPlaylist", "verificarMusicaNaPlaylist", "excluirPlaylist", 
+           "mudaNomePlaylist", "escreveJsonPlaylists", "leJsonPlaylists","obterNomesPlaylists" ,"obtemMusicasDePlaylist"]
 
 def criarPlaylist(nomePlaylist:str, dicionarioPlaylists = dicionarioPlaylists):
     if nomePlaylist in dicionarioPlaylists:
@@ -125,7 +127,7 @@ def escreveJsonPlaylists(ambiente, dicionarioPlaylists = dicionarioPlaylists):
 
     resultado = {
         "codigo_retorno": 0,
-        "mensagem": "Erro ao escrever o arquivo."
+        "mensagem": "Erro ao escrever o arquivo, dicionário inexistente."
     }
 
     if not dicionarioPlaylists:
@@ -175,5 +177,5 @@ def obterNomesPlaylists(dicionarioPlaylists=dicionarioPlaylists):
 
 def obtemMusicasDePlaylist(nomePlaylist, dicionarioPlaylists=dicionarioPlaylists):
     if nomePlaylist in dicionarioPlaylists.keys():
-        return {"codigo_retorno":1, "musicas": dicionarioPlaylists[nomePlaylist], "mensagem": "Músicas obtidas"}
+        return {"codigo_retorno":1, "musicas": dicionarioPlaylists[nomePlaylist], "mensagem": "Músicas obtidas com sucesso"}
     return {"codigo_retorno":0, "musicas":None, "mensagem":"Não foi possível obter as músicas da playlist"}

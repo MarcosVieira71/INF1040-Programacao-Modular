@@ -1,5 +1,5 @@
 from modulos.playlist import *
-from modulos.musica import verificaMusica
+import os
 
 def test_CriarPlaylistSucesso():
     dicionarioPlaylists = {}
@@ -30,7 +30,6 @@ def test_AdicionarMusicaInexistente():
 
 def test_AdicionarMusicaPlaylistInexistente():
     dicionarioPlaylists = {}
-    verificaMusica("Desconhecido", "11 - Max Coveri - Running in the 90's")
     resultado = adicionarMusicaNaPlaylist("Playlist inexistente", "Desconhecido", "11 - Max Coveri - Running in the 90's", dicionarioPlaylists)
     assert resultado == {'codigo_retorno': -1, 'mensagem': "Playlist inexistente"}
 
@@ -127,16 +126,22 @@ def test_escreveJsonPlaylistFalha():
     assert not os.path.exists(caminho_arquivo), "O arquivo foi criado."
 
 def test_leJsonPlaylistSucesso():
+    from modulos.musica import adicionarMusica, excluirMusica
     dicionarioPlaylists = {}
     criarPlaylist("Minha Playlist", dicionarioPlaylists)
+    
+    adicionarMusica("src/test/musicas_teste/11 - Max Coveri - Running in the 90's.mp3")
     adicionarMusicaNaPlaylist("Minha Playlist", "Desconhecido", "11 - Max Coveri - Running in the 90's", dicionarioPlaylists)
+    
     escreveJsonPlaylists("test", dicionarioPlaylists)
     excluirPlaylist("Minha Playlist", dicionarioPlaylists)
+
     resultado = leJsonPlaylists("test", dicionarioPlaylists)
     assert resultado == {'codigo_retorno': 1, 'mensagem': "Músicas obtidas com sucesso do arquivo."}
     assert verificarMusicaNaPlaylist("Minha Playlist", "Desconhecido", "11 - Max Coveri - Running in the 90's", dicionarioPlaylists)['codigo_retorno'] == 1
     caminho_arquivo = "src/test/jsons/playlists.json"
     os.remove(caminho_arquivo)
+    excluirMusica("Desconhecido", "11 - Max Coveri - Running in the 90's")
     assert not os.path.exists(caminho_arquivo), "O arquivo não foi apagado."
 
 def test_leJsonPlaylistFalha():
@@ -145,7 +150,7 @@ def test_leJsonPlaylistFalha():
     resultado = leJsonPlaylists("test")
     assert resultado == {"codigo_retorno": 0, "mensagem": "Erro ao ler o arquivo"}
 
-def test_obtemPlaylistsSucesso():
+def test_obtemNomePlaylistsSucesso():
     dicionarioPlaylists = {}
     criarPlaylist("Minha Playlist", dicionarioPlaylists)
     resultado = obterNomesPlaylists(dicionarioPlaylists)
@@ -153,6 +158,24 @@ def test_obtemPlaylistsSucesso():
     assert resultado["mensagem"] == "Nomes das playlists obtidos com sucesso."
     assert len(resultado["nomes"]) == 1
 
-def test_obtemPlaylistsFalha():
+def test_obtemNomePlaylistsFalha():
     resultado = obterNomesPlaylists(None)
     assert resultado == {"codigo_retorno": 0, "nomes": None, "mensagem": "Falha ao obter nomes das playlists"}
+
+def test_obtemMusicasDePlaylistSucesso():
+    from modulos.musica import adicionarMusica, excluirMusica
+    adicionarMusica("src/test/musicas_teste/11 - Max Coveri - Running in the 90's.mp3")
+    
+    nomePlaylist = "Playlist real"
+    dicionarioPlaylists = {}
+    criarPlaylist(nomePlaylist, dicionarioPlaylists)
+    adicionarMusicaNaPlaylist("Playlist real", "Desconhecido", "11 - Max Coveri - Running in the 90's", dicionarioPlaylists)
+    resultado = obtemMusicasDePlaylist("Playlist real", dicionarioPlaylists)
+    excluirMusica("Desconhecido", "11 - Max Coveri - Running in the 90's")
+    assert resultado == {"codigo_retorno": 1, "musicas": dicionarioPlaylists[nomePlaylist], "mensagem": "Músicas obtidas com sucesso"}
+    
+def test_obtemMusicasDePlaylistFalha():
+    dicionarioPlaylists = {}
+    nomePlaylist = "Playlist inventada"
+    resultado = obtemMusicasDePlaylist(nomePlaylist, dicionarioPlaylists)
+    assert resultado == {"codigo_retorno": 0, "musicas": None, "mensagem": "Não foi possível obter as músicas da playlist"}

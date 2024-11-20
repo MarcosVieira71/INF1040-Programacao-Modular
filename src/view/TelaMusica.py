@@ -52,7 +52,7 @@ class TelaMusica(QWidget):
     def acaoAdicionarMusica(self):
         arquivoNome, _ = QFileDialog.getOpenFileName(self, "Selecionar Arquivo", "", "Arquivos .mp3 (*.mp3)")
         resultadoAdicao = adicionarMusica(arquivoNome)
-        if resultadoAdicao["codigo_retorno"]:
+        if resultadoAdicao["codigo_retorno"] == 1:
             metadadosMusica = resultadoAdicao["metadados_extraidos"]
             self.adicionaItemModel(metadadosMusica=metadadosMusica)
         QMessageBox.information(self, "Aviso", resultadoAdicao["mensagem"])

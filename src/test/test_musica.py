@@ -40,6 +40,13 @@ def test_adicionarMusicaArquivoInvalido():
     assert resultado == {'codigo_retorno': 0, 'mensagem': 'Erro ao adicionar a música: arquivo inválido ou inexistente', "metadados_extraidos": {}}
     assert dicionarioMusicas == {}
 
+def test_adicionarMusicaExistente():
+    adicionarMusica("src/test/musicas_teste/11 - Max Coveri - Running in the 90's.mp3")
+    resultado = adicionarMusica("src/test/musicas_teste/11 - Max Coveri - Running in the 90's.mp3")
+    excluirMusica("Desconhecido", "11 - Max Coveri - Running in the 90's")
+    assert resultado == {"codigo_retorno": -1, "mensagem": "Música já existente.", "metadados_extraidos": {}}
+
+
 def test_VerificaMusicaExistente():
     dicionarioMusicas = {}
     adicionarMusica("src/test/musicas_teste/11 - Max Coveri - Running in the 90's.mp3", dicionarioMusicas)
@@ -70,10 +77,10 @@ def test_EncontrarMusicaInexistente():
     resultado = encontrarMusica("Autor", "MusicaInexistente", dicionarioMusicas)
     assert resultado == {'codigo_retorno': 0, 'mensagem': 'Música não encontrada', 'musica': None}
 
-# def test_excluiMusicaSucesso():
-#     adicionarMusica("src/test/musicas_teste/11 - Max Coveri - Running in the 90's.mp3")
-#     resultado = excluirMusica("Desconhecido", "11 - Max Coveri - Running in the 90's")
-#     assert resultado == {"codigo_retorno": 1, "mensagem": "Música excluída com sucesso."}
+def test_excluiMusicaSucesso():
+     adicionarMusica("src/test/musicas_teste/11 - Max Coveri - Running in the 90's.mp3")
+     resultado = excluirMusica("Desconhecido", "11 - Max Coveri - Running in the 90's")
+     assert resultado == {"codigo_retorno": 1, "mensagem": "Música excluída com sucesso."}
 
 def test_excluiMusicaInexistente():
     dicionarioMusicas = {}
@@ -90,7 +97,15 @@ def test_excluiMusicaComAvaliacao():
     excluirMusica("Desconhecido", "11 - Max Coveri - Running in the 90's")
 
 def test_excluiMusicaEmPlaylist():
-    assert 1==1
+    from modulos.playlist import criarPlaylist, adicionarMusicaNaPlaylist, excluirPlaylist
+    adicionarMusica("src/test/musicas_teste/11 - Max Coveri - Running in the 90's.mp3")
+    criarPlaylist("Playlist Nova")
+
+    adicionarMusicaNaPlaylist("Playlist Nova", "Desconhecido", "11 - Max Coveri - Running in the 90's")
+    resultado = excluirMusica("Desconhecido", "11 - Max Coveri - Running in the 90's")
+    excluirPlaylist("Playlist Nova")
+    excluirMusica("Desconhecido", "11 - Max Coveri - Running in the 90's")
+    assert resultado == {"codigo_retorno": -2, "mensagem": "A música não pode ser excluída pois está em uma playlist."}
 
 def test_escreveJsonSucesso():
     dicionarioMusicas = {}
