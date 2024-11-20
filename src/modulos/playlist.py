@@ -1,6 +1,8 @@
 import modulos.avaliacoes as avaliacoes
 import modulos.musica as musica
 from modulos.auxiliarJson import *
+import os
+import json
 
 dicionarioPlaylists = {}
 
@@ -112,4 +114,37 @@ def mudaNomePlaylist(nomePlaylist:str, novoNome:str, dicionarioPlaylists = dicio
         'codigo_retorno': -1, 
         'mensagem': 'Playlist não existe'
         }
+    return resultado
+
+def escreveJsonPlaylists(dicionarioPlaylists = dicionarioPlaylists):
+    resultado = {
+        "codigo_retorno": 0,
+        "mensagem": "Erro ao escrever o arquivo."
+    }
+    try:
+        os.makedirs("src/jsons", exist_ok=True)
+        dicionarioPlaylists = converteChavesParaString(dicionarioPlaylists)
+        
+        with open("src/jsons/playlists.json", "w", encoding="utf-8") as arquivo:
+            json.dump(dicionarioPlaylists, arquivo, ensure_ascii=False, indent=4)
+            resultado["codigo_retorno"] = 1
+            resultado["mensagem"] = "Arquivo escrito com sucesso."
+    except Exception as e:
+        pass
+    return resultado
+
+def leJsonPlaylists(dicionarioPlaylists = dicionarioPlaylists):
+    resultado = {
+        "codigo_retorno": 0,
+        "mensagem": "Erro ao ler o arquivo"
+    }
+    try:
+        with open("src/jsons/playlists.json", "r", encoding="utf-8") as arquivo:
+            leituraJson = json.load(arquivo)
+            dicionarioPlaylists.clear()
+            dicionarioPlaylists.update(reverterChavesParaTipoOriginal(leituraJson))
+            resultado["codigo_retorno"] = 1
+            resultado["mensagem"] = "Músicas obtidas com sucesso do arquivo"
+    except Exception as e:
+        pass
     return resultado
