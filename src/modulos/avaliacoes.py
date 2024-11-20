@@ -3,6 +3,9 @@ from modulos.auxiliarJson import *
 import json
 import os
 
+__all__ = ["criarAvaliacao","excluirAvaliacao", "atualizaAvaliacao", "leJsonAvaliacoes", "escreveJsonAvaliacoes", "exportarAvaliacoes", "geraStringAvaliacao", "verificaAvaliacao"]
+
+
 dicionarioAvaliacoes={}
 
 def criarAvaliacao(nomeAutor: str, nomeMusica: str, nota: int, texto: str, dicionarioAvaliacoes=dicionarioAvaliacoes):
@@ -102,15 +105,20 @@ def atualizaAvaliacao(nomeAutor: str, nomeMusica: str, nota: int, texto: str, di
         resultado["mensagem"] = "Avaliação atualizada com sucesso"
     return resultado
 
-def leJsonAvaliacoes(dicionarioAvaliacoes=dicionarioAvaliacoes):
+def leJsonAvaliacoes(ambiente, dicionarioAvaliacoes=dicionarioAvaliacoes):
+    if ambiente == "test":
+        caminhoPasta = "src/test/jsons"
+    else:
+        caminhoPasta = "src/jsons"
+    
     resultado = {
         "codigo_retorno": 0,
         "mensagem": "Erro ao ler o arquivo ",
         "dicionario_avaliacoes": {}
     }
-
+    caminhoArquivo = os.path.join(caminhoPasta, "avaliacoes.json")
     try:
-        with open("src/jsons/avaliacoes.json", "r", encoding="utf-8") as arquivo:
+        with open(caminhoArquivo, "r", encoding="utf-8") as arquivo:
             dados = json.load(arquivo)
             dicionarioAvaliacoes.clear()
             
@@ -124,16 +132,21 @@ def leJsonAvaliacoes(dicionarioAvaliacoes=dicionarioAvaliacoes):
 
     return resultado
 
-def escreveJsonAvaliacoes(dicionarioAvaliacoes=dicionarioAvaliacoes):
+def escreveJsonAvaliacoes(ambiente, dicionarioAvaliacoes=dicionarioAvaliacoes):
+    if ambiente == "test":
+        caminhoPasta = "src/test/jsons"
+    else:
+        caminhoPasta = "src/jsons"
+    
     resultado={
         "codigo_retorno":0,
         "mensagem":"Erro ao escrever o arquivo de avaliações",
     }
     try:
-        os.makedirs("src/jsons", exist_ok=True)
+        os.makedirs(caminhoPasta, exist_ok=True)
         dicionarioAvaliacoes = converteChavesParaString(dicionarioAvaliacoes)
-        
-        with open("src/jsons/avaliacoes.json", "w", encoding="utf-8") as arquivo:
+        caminhoArquivo = os.path.join(caminhoPasta, "avaliacoes.json")
+        with open(caminhoArquivo, "w", encoding="utf-8") as arquivo:
             json.dump(dicionarioAvaliacoes, arquivo, indent=4, ensure_ascii=False)
             resultado["codigo_retorno"]=1
             resultado["mensagem"]="Arquivo escrito com sucesso"
@@ -173,3 +186,19 @@ def geraStringAvaliacao(nomeAutor: str, nomeMusica: str, dicionarioAvaliacoes=di
         resultado["stringAvaliacao"] = "Erro: Avaliação não encontrada."
 
     return resultado
+
+def exportarAvaliacoes(tipoCodificacao, dicionarioAvaliacoes=dicionarioAvaliacoes):
+    from modulos.texto import geraTxtAvaliacoes
+    listaStrings = []
+    for autor, musica in dicionarioAvaliacoes.keys():
+        stringAvaliacaoRetorno = geraStringAvaliacao(autor, musica)  # Gera string da avaliação
+        if not stringAvaliacaoRetorno["codigo_retorno"]:
+            return {"codigo_retorno": -1, "mensagem": "Erro no formato de texto"}
+        listaStrings.append(stringAvaliacaoRetorno["stringAvaliacao"])
+
+    resultado = geraTxtAvaliacoes(listaStrings, tipoCodificacao)
+
+    if resultado["codigo_retorno"] == 1:
+        return {"codigo_retorno": 1, "mensagem": "Arquivo de avaliações escrito com sucesso"}
+    else:
+        return {"codigo_retorno": 0, "mensagem": "Erro ao escrever o arquivo de avaliações"}

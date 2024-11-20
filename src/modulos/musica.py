@@ -7,6 +7,9 @@ from pathlib import Path
 import json
 import os 
 
+__all__ = ["verificaArquivo","extraiMetadadosMusicas", "adicionarMusica", "verificaMusica", "encontrarMusica", 
+           "excluirMusica", "escreveJsonMusicas", "leJsonMusicas", "obtemMusicas"]
+
 dicionarioMusicas = {}
 
 def verificaArquivo(caminhoDoArquivo: str):
@@ -101,7 +104,7 @@ def excluirMusica(nomeAutor: str, nomeDaMusica: str, dicionarioMusicas=dicionari
     # Verifica se a música tem avaliação
     if avaliacoes.verificaAvaliacao(nomeAutor, nomeDaMusica)["codigo_retorno"]:
         resultado["codigo_retorno"] = -1
-        resultado["mensagem"] = "A música não pode ser excluída pois tem avaliações."
+        resultado["mensagem"] = "A música não pode ser excluída pois tem avaliação."
         return resultado
 
     # Verifica se a música está em uma playlist
@@ -119,19 +122,27 @@ def excluirMusica(nomeAutor: str, nomeDaMusica: str, dicionarioMusicas=dicionari
     return resultado
 
 
+def escreveJsonMusicas(ambiente, dicionarioMusicas=dicionarioMusicas):
+    if ambiente == "test":
+        caminhoPasta = "src/test/jsons"
+    else:
+        caminhoPasta = "src/jsons"
 
-def escreveJsonMusicas(dicionarioMusicas=dicionarioMusicas):
     resultado = {
         "codigo_retorno": 0,
-        "mensagem": "Erro ao escrever o arquivo."
+        "mensagem": "Erro ao escrever o arquivo, dicionário inexistente."
     }
     
+    if not dicionarioMusicas:
+        return resultado
+
     try:
-        os.makedirs("src/jsons", exist_ok=True)
+        os.makedirs(caminhoPasta, exist_ok=True)
 
         dicionarioMusicas = converteChavesParaString(dicionarioMusicas)
-        
-        with open("src/jsons/musicas.json", "w", encoding="utf-8") as arquivo:
+        caminhoArquivo = os.path.join(caminhoPasta, "musicas.json")
+
+        with open(caminhoArquivo, "w", encoding="utf-8") as arquivo:
             json.dump(dicionarioMusicas, arquivo, ensure_ascii=False, indent=4)
             resultado["codigo_retorno"] = 1
             resultado["mensagem"] = "Arquivo escrito com sucesso."
@@ -140,14 +151,19 @@ def escreveJsonMusicas(dicionarioMusicas=dicionarioMusicas):
     
     return resultado
 
-def leJsonMusicas(dicionarioMusicas=dicionarioMusicas):
+def leJsonMusicas(ambiente, dicionarioMusicas=dicionarioMusicas):
+    if ambiente == "test":
+        caminhoPasta = "src/test/jsons"
+    else:
+        caminhoPasta = "src/jsons"
+    
     resultado = {
         "codigo_retorno": 0,
         "mensagem": "Erro ao ler o arquivo"
     }
-
+    caminhoArquivo = os.path.join(caminhoPasta, "musicas.json")
     try:
-        with open("src/jsons/musicas.json", "r", encoding="utf-8") as arquivo:
+        with open(caminhoArquivo, "r", encoding="utf-8") as arquivo:
             leituraJson = json.load(arquivo)
             dicionarioMusicas.clear()
             dicionarioMusicas.update(reverterChavesParaTipoOriginal(leituraJson))
@@ -160,6 +176,6 @@ def leJsonMusicas(dicionarioMusicas=dicionarioMusicas):
 
 def obtemMusicas(dicionarioMusicas=dicionarioMusicas):
     if dicionarioMusicas:
-        return {"codigo_retorno": 1, "musicas": dicionarioMusicas, "mensagem":"Músicas obtidas com sucesso"}
+        return {"codigo_retorno": 1, "musicas": dicionarioMusicas.values(), "mensagem":"Músicas obtidas com sucesso"}
     return {"codigo_retorno": 0, "musicas": None, "mensagem":"Não foi possível obter as músicas"}
 
