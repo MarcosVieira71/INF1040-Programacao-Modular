@@ -1,7 +1,7 @@
-from modulos.musica import adicionarMusica
 from modulos.avaliacoes import *
 
 def test_criarAvaliacaoSucesso():
+    from modulos.musica import adicionarMusica, excluirMusica
     dicionarioAvaliacoes = {}
     adicionarMusica("src/test/musicas_teste/08 - Leslie Parrish - Remember Me.mp3")
         
@@ -11,6 +11,7 @@ def test_criarAvaliacaoSucesso():
         "mensagem": "Avaliação criada com sucesso",
         "avaliacao": {"nota": 5, "texto": "Ótima música!"}
     }
+    excluirMusica("Desconhecido", "08 - Leslie Parrish - Remember Me")
     assert len(dicionarioAvaliacoes) == 1
 
 def test_criarAvaliacaoMusicaNaoEncontrada():
@@ -24,10 +25,12 @@ def test_criarAvaliacaoMusicaNaoEncontrada():
     assert len(dicionarioAvaliacoes) == 0
 
 def test_criarAvaliacaoJaExistente():
+    from modulos.musica import adicionarMusica, excluirMusica
     dicionarioAvaliacoes = {("Desconhecido", "08 - Leslie Parrish - Remember Me"): {"nota": 5, "texto": "Ótima música!"}}
     adicionarMusica("src/test/musicas_teste/08 - Leslie Parrish - Remember Me.mp3")
 
     resultado = criarAvaliacao("Desconhecido", "08 - Leslie Parrish - Remember Me", 4, "Nova avaliação.", dicionarioAvaliacoes)
+    excluirMusica("Desconhecido", "08 - Leslie Parrish - Remember Me")
     assert resultado == {
         "codigo_retorno": -1,
         "mensagem": "Avaliação já existente para esta música",

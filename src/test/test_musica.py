@@ -81,18 +81,21 @@ def test_excluiMusicaInexistente():
     assert resultado == {"codigo_retorno": 0, "mensagem": "Música não existe."}
 
 def test_excluiMusicaComAvaliacao():
-    from modulos.avaliacoes import criarAvaliacao
+    from modulos.avaliacoes import criarAvaliacao, excluirAvaliacao
     adicionarMusica("src/test/musicas_teste/11 - Max Coveri - Running in the 90's.mp3")
     criarAvaliacao("Desconhecido", "11 - Max Coveri - Running in the 90's", 5, "Otima")
     resultado = excluirMusica("Desconhecido", "11 - Max Coveri - Running in the 90's")
     assert resultado == {"codigo_retorno":-1, "mensagem": "A música não pode ser excluída pois tem avaliação."}
+    excluirAvaliacao("Desconhecido","11 - Max Coveri - Running in the 90's")
+    excluirMusica("Desconhecido", "11 - Max Coveri - Running in the 90's")
 
 def test_excluiMusicaEmPlaylist():
     assert 1==1
 
 def test_escreveJsonSucesso():
-    resultado = escreveJsonMusicas("test")
-    adicionarMusica("src/test/musicas_teste/08 - Leslie Parrish - Remember Me.mp3")
+    dicionarioMusicas = {}
+    adicionarMusica("src/test/musicas_teste/08 - Leslie Parrish - Remember Me.mp3", dicionarioMusicas)
+    resultado = escreveJsonMusicas("test", dicionarioMusicas)
     assert resultado == {"codigo_retorno": 1, "mensagem": "Arquivo escrito com sucesso."}
     caminho_arquivo = "src/test/jsons/musicas.json"
     assert os.path.exists(caminho_arquivo), "O arquivo não foi criado."
@@ -106,12 +109,13 @@ def test_escreveJsonFalha():
     assert not os.path.exists(caminho_arquivo), "O arquivo foi criado."
  
 def test_leJsonSucesso():
-    adicionarMusica("src/test/musicas_teste/08 - Leslie Parrish - Remember Me.mp3")
-    escreveJsonMusicas("test")
-    excluirMusica("Desconhecido", "08 - Leslie Parrish - Remember Me.mp3")
-    resultado = leJsonMusicas("test")
+    dicionarioMusicas = {}
+    adicionarMusica("src/test/musicas_teste/08 - Leslie Parrish - Remember Me.mp3", dicionarioMusicas)
+    escreveJsonMusicas("test", dicionarioMusicas)
+    excluirMusica("Desconhecido", "08 - Leslie Parrish - Remember Me.mp3", dicionarioMusicas)
+    resultado = leJsonMusicas("test", dicionarioMusicas)
     assert resultado == {"codigo_retorno": 1, "mensagem":"Músicas obtidas com sucesso do arquivo"}
-    assert encontrarMusica("Desconhecido", "08 - Leslie Parrish - Remember Me")["codigo_retorno"] == 1
+    assert encontrarMusica("Desconhecido", "08 - Leslie Parrish - Remember Me", dicionarioMusicas)["codigo_retorno"] == 1
     caminho_arquivo = "src/test/jsons/musicas.json"
     os.remove(caminho_arquivo)
     assert not os.path.exists(caminho_arquivo), "O arquivo não foi apagado."
@@ -133,4 +137,3 @@ def test_obtemMusicasSucesso():
 def test_obtemMusicasFalha():
     resultado = obtemMusicas(None)
     assert resultado == {"codigo_retorno": 0, "musicas": None, "mensagem":"Não foi possível obter as músicas"}
-

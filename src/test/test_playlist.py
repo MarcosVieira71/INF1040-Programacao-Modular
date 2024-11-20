@@ -8,24 +8,25 @@ def test_CriarPlaylistSucesso():
 
 def test_CriarPlaylistExistente():
     dicionarioPlaylists = {}
+    criarPlaylist("Minha Playlist", dicionarioPlaylists)
     resultado = criarPlaylist("Minha Playlist", dicionarioPlaylists)
     assert resultado == {'codigo_retorno': 0, 'mensagem': 'Erro ao criar a playlist'}
 
 def test_AdicionarMusicaValida():
+    from modulos.musica import adicionarMusica, excluirMusica
+    adicionarMusica("src/test/musicas_teste/11 - Max Coveri - Running in the 90's.mp3")
     dicionarioPlaylists = {}
     criarPlaylist("Minha Playlist", dicionarioPlaylists)
-    musica_existe = verificaMusica("Desconhecido", "11 - Max Coveri - Running in the 90's")
     resultado = adicionarMusicaNaPlaylist("Minha Playlist", "Desconhecido", "11 - Max Coveri - Running in the 90's", dicionarioPlaylists)
-    assert resultado == {'codigo_retorno': 1, 'mensagem': 'Música adicionada na playlist'}
-    assert musica_existe == {'codigo_retorno': 1, 'mensagem': 'Música adicionada com sucesso'}
+    excluirMusica("Desconhecido", "11 - Max Coveri - Running in the 90's")
+    assert resultado == {'codigo_retorno': 1, 'mensagem': 'Música adicionada com sucesso'}
+    
 
 def test_AdicionarMusicaInexistente():
     dicionarioPlaylists = {}
     criarPlaylist("Minha Playlist", dicionarioPlaylists)
-    musica_existe = verificaMusica("Autor", "Musica Inexistente")
     resultado = adicionarMusicaNaPlaylist("Minha Playlist", "Autor", "Musica Inexistente", dicionarioPlaylists)
     assert resultado == {'codigo_retorno': 0, 'mensagem': 'Música inexistente'}
-    assert musica_existe == {'codigo_retorno': 0, 'mensagem': 'Música não existe no dicionário'}
 
 def test_AdicionarMusicaPlaylistInexistente():
     dicionarioPlaylists = {}
@@ -34,10 +35,14 @@ def test_AdicionarMusicaPlaylistInexistente():
     assert resultado == {'codigo_retorno': -1, 'mensagem': "Playlist inexistente"}
 
 def test_ExcluirMusicaExistente():
+    from modulos.musica import adicionarMusica, excluirMusica
     dicionarioPlaylists = {}
+
+    adicionarMusica("src/test/musicas_teste/11 - Max Coveri - Running in the 90's.mp3")
     criarPlaylist("Minha Playlist", dicionarioPlaylists)
-    adicionarMusicaNaPlaylist("Minha Playlist", "Desconhecido", "11 - Max Coveri - Running in the 90's")
+    adicionarMusicaNaPlaylist("Minha Playlist", "Desconhecido", "11 - Max Coveri - Running in the 90's", dicionarioPlaylists)
     resultado = excluirMusicaDaPlaylist("Minha Playlist", "Desconhecido", "11 - Max Coveri - Running in the 90's",dicionarioPlaylists)
+    excluirMusica("Desconhecido", "11 - Max Coveri - Running in the 90's")
     assert resultado == {'codigo_retorno': 1, 'mensagem': 'Música removida da playlist'}
 
 def test_ExcluirMusicaInexistente():
@@ -54,10 +59,13 @@ def test_ExcluirMusicaPlaylistInexistente():
     assert resultado == {'codigo_retorno': -1, 'mensagem': 'Playlist inexistente'}
 
 def test_VerificarMusicaExistente():
+    from modulos.musica import adicionarMusica, excluirMusica
     dicionarioPlaylists = {}
+    adicionarMusica("src/test/musicas_teste/11 - Max Coveri - Running in the 90's.mp3")
     criarPlaylist("Minha Playlist", dicionarioPlaylists)
     adicionarMusicaNaPlaylist("Minha Playlist", "Desconhecido", "11 - Max Coveri - Running in the 90's", dicionarioPlaylists)
     resultado = verificarMusicaNaPlaylist("Minha Playlist", "Desconhecido", "11 - Max Coveri - Running in the 90's", dicionarioPlaylists)
+    excluirMusica("Desconhecido", "11 - Max Coveri - Running in the 90's")
     assert resultado == {'codigo_retorno': 1, 'mensagem': 'Música existe na playlist'}
 
 def test_VerificarMusicaInexistente():

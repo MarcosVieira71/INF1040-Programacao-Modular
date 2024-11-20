@@ -21,8 +21,9 @@ def criarPlaylist(nomePlaylist:str, dicionarioPlaylists = dicionarioPlaylists):
     return resultado
 
 def adicionarMusicaNaPlaylist(nomePlaylist:str, nomeAutor:str, nomeMusica:str, dicionarioPlaylists = dicionarioPlaylists):
+    from modulos.musica import verificaMusica
     if nomePlaylist in dicionarioPlaylists:
-        musica_existe = musica.verificaMusica(nomeAutor, nomeMusica)
+        musica_existe = verificaMusica(nomeAutor, nomeMusica)
         if musica_existe["codigo_retorno"] == 1:
             dicionarioPlaylists[nomePlaylist].append((nomeAutor,nomeMusica))
             resultado = {
@@ -32,7 +33,7 @@ def adicionarMusicaNaPlaylist(nomePlaylist:str, nomeAutor:str, nomeMusica:str, d
         else:
             resultado = {
             'codigo_retorno': 0,
-            'mensagem': "Música não existe no dicionário"
+            'mensagem': "Música inexistente"
             }
     else:
         resultado = {
@@ -61,7 +62,7 @@ def excluirMusicaDaPlaylist(nomePlaylist:str, nomeAutor:str, nomeMusica:str, dic
         } 
     return resultado
 
-def verificarMusicaNaPlaylist(nomePlaylist:str, nomeAutor:str, nomeMusica:str, dicionarioPlaylists = dicionarioPlaylists):
+def verificarMusicaNaPlaylist(nomePlaylist:str, nomeAutor:str, nomeMusica:str, dicionarioPlaylists=dicionarioPlaylists):
     if nomePlaylist in dicionarioPlaylists:
         if (nomeAutor,nomeMusica) in dicionarioPlaylists[nomePlaylist]:
             resultado = {
@@ -148,3 +149,8 @@ def leJsonPlaylists(dicionarioPlaylists = dicionarioPlaylists):
     except Exception as e:
         pass
     return resultado
+
+def obterNomesPlaylists(dicionarioPlaylists=dicionarioPlaylists):
+    if dicionarioPlaylists:
+        return {"codigo_retorno":1, "nomes": dicionarioPlaylists.keys()}
+    return {"codigo_retorno": 0, "nomes": None}
