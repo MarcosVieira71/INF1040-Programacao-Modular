@@ -8,21 +8,28 @@ def retornaLibPath():
     sistemaOperacional = platform.system()
     if sistemaOperacional == "Windows":
         lib = "converteutf.dll"
+        libcpath = "msvcrt.dll"  # Biblioteca padrão C no Windows
+
     elif sistemaOperacional == "Darwin": 
         lib = "converteutf.dylib"
+        libcpath = None  # Usado em Linux/macOS
+
     else:  
         lib = "converteutf.so"
-    return os.path.join(os.path.dirname(__file__), "libsSB", lib)
+        libcpath = None  # Usado em Linux/macOS
+
+    return os.path.join(os.path.dirname(__file__), "libsSB", lib), libcpath
 
 
-def converteUtf8_32(caminho_entrada, caminho_saida):
-    libPath = retornaLibPath()
+def converteUtf8_32Linux(caminho_entrada, caminho_saida):
+    
+    libPath, libcpath = retornaLibPath()
     converteutf = ctypes.CDLL(libPath)
 
     converteutf.convUtf8p32.argtypes = [ctypes.c_void_p, ctypes.c_void_p]
     converteutf.convUtf8p32.restype = ctypes.c_int
 
-    libc = ctypes.CDLL(None)
+    libc = ctypes.CDLL(libcpath)
     libc.fdopen.argtypes = [ctypes.c_int, ctypes.c_char_p]
     libc.fdopen.restype = ctypes.c_void_p
 
@@ -54,12 +61,47 @@ def geraTxtAvaliacoes(listaStrings, tipoCodificacao):
         arquivo.write("\n\n".join(listaStrings))
 
     if tipoCodificacao == "UTF-32":
-        resultadoConversao = converteUtf8_32(caminho_utf8, caminho_utf32)
+        sistemaOperacional = platform.system()
+        if sistemaOperacional == "Windows":
+            resultadoConversao = converteUtf8_32Windows(caminho_utf8, caminho_utf32)
+        else: resultadoConversao = converteUtf8_32Linux(caminho_utf8, caminho_utf32)
+        
         if resultadoConversao["codigo_retorno"] == 1:
             os.remove(caminho_utf8)  
         else:
             return {"codigo_retorno": 0, "mensagem": resultadoConversao["mensagem"]}
-    else:
-        os.remove(caminho_utf32)  
-        resultadoConversao = resultado
-    return resultadoConversao
+    elif tipoCodificacao == "UTF-8":
+        if os.path.exists(caminho_utf32): os.remove(caminho_utf32)  
+    else: return {"codigo_retorno": -1, "mensagem": "Tipo de codificação inválido"}
+    return resultado
+
+def converteUtf8_32Windows(caminho_entrada, caminho_saida):
+    libPath, libcpath = retornaLibPath()
+    converteutf = ctypes.CDLL(libPath)
+
+    # Configurar os argumentos e retorno da função convUtf8p32
+    converteutf.convUtf8p32.argtypes = [ctypes.c_void_p, ctypes.c_void_p]
+    converteutf.convUtf8p32.restype = ctypes.c_int
+
+    # Carregar a biblioteca padrão C no Windows
+    libc = ctypes.CDLL(libcpath)
+    libc.fopen.argtypes = [ctypes.c_char_p, ctypes.c_char_p]
+    libc.fopen.restype = ctypes.c_void_p
+
+    libc.fclose.argtypes = [ctypes.c_void_p]
+    libc.fclose.restype = ctypes.c_int
+
+    try:
+        entrada_file = libc.fopen(caminho_entrada.encode('utf-8'), b"rb")
+        saida_file = libc.fopen(caminho_saida.encode('utf-8'), b"wb")
+
+        resultado = converteutf.convUtf8p32(entrada_file, saida_file)
+        if resultado == 0:
+            return {"codigo_retorno": 1, "mensagem": "Conversão UTF-8 para UTF-32 concluída com sucesso"}
+        else:
+            return {"codigo_retorno": 0, "mensagem": "Erro na conversão UTF-8 para UTF-32"}
+    finally:
+        if entrada_file:
+            libc.fclose(entrada_file)
+        if saida_file:
+            libc.fclose(saida_file)

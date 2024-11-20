@@ -1,6 +1,3 @@
-/* Julia Gomes Zibordi 2320934 3WA */
-/* Marcos Paulo Marinho Vieira 2320466 3WA*/
-
 #include <stdlib.h>
 #include <stdio.h>
 
@@ -50,7 +47,6 @@ int convUtf8p32(FILE* arquivo_entrada, FILE* arquivo_saida) {
     }
 
     fflush(arquivo_saida); 
-    printf("Arquivo UTF-32 escrito e finalizado com sucesso.\n");
     return 0;
 }
 

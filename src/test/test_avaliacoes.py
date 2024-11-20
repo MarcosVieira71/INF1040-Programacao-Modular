@@ -1,7 +1,9 @@
 from modulos.avaliacoes import *
+import os
 
 def test_criarAvaliacaoSucesso():
     from modulos.musica import adicionarMusica, excluirMusica
+
     dicionarioAvaliacoes = {}
     adicionarMusica("src/test/musicas_teste/08 - Leslie Parrish - Remember Me.mp3")
         
@@ -26,6 +28,7 @@ def test_criarAvaliacaoMusicaNaoEncontrada():
 
 def test_criarAvaliacaoJaExistente():
     from modulos.musica import adicionarMusica, excluirMusica
+
     dicionarioAvaliacoes = {("Desconhecido", "08 - Leslie Parrish - Remember Me"): {"nota": 5, "texto": "Ótima música!"}}
     adicionarMusica("src/test/musicas_teste/08 - Leslie Parrish - Remember Me.mp3")
 
@@ -85,3 +88,44 @@ def test_geraStringAvaliacaoInexistente():
         "stringAvaliacao": "Erro: Avaliação não encontrada."
     }
 
+def test_escreveJsonSucesso():
+    from modulos.musica import adicionarMusica, excluirMusica
+
+    adicionarMusica("src/test/musicas_teste/08 - Leslie Parrish - Remember Me.mp3")
+    criarAvaliacao("Desconhecido", "08 - Leslie Parrish - Remember Me", 5, "Ótima Música!")
+
+    resultado = escreveJsonAvaliacoes("test")
+    assert resultado == {"codigo_retorno": 1, "mensagem": "Arquivo escrito com sucesso"}
+    caminho_arquivo = "src/test/jsons/avaliacoes.json"
+    assert os.path.exists(caminho_arquivo), "O arquivo não foi criado."
+    os.remove(caminho_arquivo)
+    excluirAvaliacao("Desconhecido", "08 - Leslie Parrish - Remember Me")
+    excluirMusica("Desconhecido", "08 - Leslie Parrish - Remember Me")
+    assert not os.path.exists(caminho_arquivo), "O arquivo não foi apagado."
+
+def test_escreveJsonFalha():
+    resultado = escreveJsonAvaliacoes("test", None)
+    assert resultado == {"codigo_retorno": 0, "mensagem": "Erro ao escrever o arquivo, dicionário inexistente."}
+    caminho_arquivo = "src/test/jsons/avaliacoes.json"
+    assert not os.path.exists(caminho_arquivo), "O arquivo foi criado."
+ 
+def test_leJsonSucesso():
+    from modulos.musica import adicionarMusica, excluirMusica
+
+    adicionarMusica("src/test/musicas_teste/08 - Leslie Parrish - Remember Me.mp3")
+    criarAvaliacao("Desconhecido", "08 - Leslie Parrish - Remember Me", 5, "Ótima Música!")
+    escreveJsonAvaliacoes("test")
+    excluirAvaliacao("Desconhecido", "08 - Leslie Parrish - Remember Me")
+    excluirMusica("Desconhecido", "08 - Leslie Parrish - Remember Me")
+    resultado = leJsonAvaliacoes("test")
+    assert resultado == {"codigo_retorno": 1, "mensagem":"Avaliações obtidas com sucesso"}
+    assert geraStringAvaliacao("Desconhecido", "08 - Leslie Parrish - Remember Me")["codigo_retorno"] == 1
+    caminho_arquivo = "src/test/jsons/avaliacoes.json"
+    os.remove(caminho_arquivo)
+    assert not os.path.exists(caminho_arquivo), "O arquivo não foi apagado."
+
+def test_leJsonFalha():
+   caminho_arquivo = "src/test/jsons/avaliacoes.json"
+   assert not os.path.exists(caminho_arquivo), "Arquivo existente antes da execução do teste"
+   resultado = leJsonAvaliacoes("test")
+   assert resultado == {"codigo_retorno": 0, "mensagem": "Erro ao ler o arquivo"}
