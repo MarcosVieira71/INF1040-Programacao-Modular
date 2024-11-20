@@ -9,8 +9,8 @@ import sys
 class ProgramaPrincipal(QApplication):
     def __init__(self):
         super().__init__()
-        print(leJsonAvaliacoes()["mensagem"])
-        print(leJsonMusicas()["mensagem"])
+        print("Avaliacoes:", leJsonAvaliacoes("app")["mensagem"])
+        print("Musicas:", leJsonMusicas("app")["mensagem"])
         self.telaPrincipal = TelaPrincipal()
 
 if __name__ == "__main__":

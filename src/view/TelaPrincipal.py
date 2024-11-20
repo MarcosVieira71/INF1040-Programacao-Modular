@@ -31,8 +31,8 @@ class TelaPrincipal(QMainWindow, Ui_MainWindow):
         self.stackedWidget.setCurrentIndex(1)
 
     def closeEvent(self, event):
-        print(escreveJsonMusicas()["mensagem"])
-        print(escreveJsonAvaliacoes()["mensagem"])
+        print("Avaliacoes:", escreveJsonAvaliacoes("app")["mensagem"])
+        print("Musicas:", escreveJsonMusicas("app")["mensagem"])
         super().closeEvent(event)
 
     def abrirDialogo(self):

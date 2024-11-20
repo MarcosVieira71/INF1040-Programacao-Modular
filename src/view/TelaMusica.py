@@ -75,8 +75,8 @@ class TelaMusica(QWidget):
     def preencheModel(self):
         resultadoObterMusicas = obtemMusicas()
         if resultadoObterMusicas["codigo_retorno"]:
-            dicionarioMusicas = resultadoObterMusicas["musicas"]  # Acessa o dicionário de músicas
-            for musica in dicionarioMusicas.values():
+            musicas = resultadoObterMusicas["musicas"]  
+            for musica in musicas:
                 self.adicionaItemModel(musica)
     
     def abreDialogoAvaliacao(self, index):
