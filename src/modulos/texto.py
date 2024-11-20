@@ -59,8 +59,10 @@ def geraTxtAvaliacoes(listaStrings, tipoCodificacao):
             os.remove(caminho_utf8)  
         else:
             return {"codigo_retorno": 0, "mensagem": resultadoConversao["mensagem"]}
-    else:
+    elif tipoCodificacao == "UFT-8":
         try: os.remove(caminho_utf32)
         except: pass
         resultadoConversao = resultado
+    else:
+        return {"codigo_retorno": -1, "mensagem": "Tipo de codificação inválido"}
     return resultadoConversao

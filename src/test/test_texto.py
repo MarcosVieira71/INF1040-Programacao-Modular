@@ -10,5 +10,5 @@ def test_geraTxtAvaliacoes_tipoCodificacaoInvalido():
 
     resultado = geraTxtAvaliacoes(lista_strings, tipo_codificacao)
 
-    assert resultado == {"codigo_retorno": 0, "mensagem": "Tipo de codificação inválido"}
+    assert resultado == {"codigo_retorno": -1, "mensagem": "Tipo de codificação inválido"}
     
