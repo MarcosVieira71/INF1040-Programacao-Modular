@@ -46,8 +46,8 @@ class TelaVisualizarPlaylist(QWidget):
 
             duracaoTotalSegundos = 0
             for row, musica in enumerate(musicas):
-                nomeMusica = musica[1]
                 autor = musica[0]
+                nomeMusica = musica[1]
                 resultadoEncontrarMusica = encontrarMusica(autor, nomeMusica)
                 if resultadoEncontrarMusica["codigo_retorno"]:
                     duracaoSegundos = int(resultadoEncontrarMusica["musica"]["duracao"])
@@ -78,8 +78,8 @@ class TelaVisualizarPlaylist(QWidget):
         index = self.table.indexAt(position)
         if index.isValid(): 
             row = index.row()
-            nomeAutor = self.table.item(row, 1).text()  
             nomeMusica = self.table.item(row, 0).text()  
+            nomeAutor = self.table.item(row, 1).text()  
 
             menu = QMenu(self)
             tocarAction = menu.addAction("Tocar Música")
@@ -93,8 +93,7 @@ class TelaVisualizarPlaylist(QWidget):
                 self.acaoRemoverMusica(nomeMusica, nomeAutor)
 
     def acaoTocarMusica(self, nomeMusica, nomeAutor):
-        
-        resultadoEncontrarMusica = encontrarMusica(nomeMusica, nomeAutor)
+        resultadoEncontrarMusica = encontrarMusica(nomeAutor, nomeMusica)
         if resultadoEncontrarMusica["codigo_retorno"]:
             musica = resultadoEncontrarMusica["musica"]
             self.player.tocaMusica(musica["caminho"])

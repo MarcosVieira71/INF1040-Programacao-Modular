@@ -1,10 +1,10 @@
 import re
 
-from PySide6.QtWidgets import QListView, QWidget, QVBoxLayout, QLabel, QMessageBox, QInputDialog
+from PySide6.QtWidgets import QListView, QWidget, QVBoxLayout, QMessageBox, QInputDialog
 from PySide6.QtGui import QStandardItem, QStandardItemModel
 from PySide6.QtCore import Qt, QPoint
 
-from modulos.playlist import criarPlaylist, mudaNomePlaylist, excluirPlaylist, obterNomesPlaylists, dicionarioPlaylists, obtemMusicasDePlaylist
+from modulos.playlist import criarPlaylist, mudaNomePlaylist, excluirPlaylist, obterNomesPlaylists
 from view.MenuContextoPlaylist import MenuContextoPlaylist
 from view.TelaComboMusicas import TelaComboMusicas
 from view.TelaVisualizarPlaylist import TelaVisualizarPlaylist
@@ -30,7 +30,6 @@ class TelaPlaylist(QWidget):
             menu.opcaoIndexValido(index)
         else:
             menu.opcaoIndexInvalido()
-        print(dicionarioPlaylists)
         menu.exec(self.listView.mapToGlobal(position))
 
     def preencheModel(self):

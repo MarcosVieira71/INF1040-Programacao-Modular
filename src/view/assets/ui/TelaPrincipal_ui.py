@@ -104,8 +104,7 @@ class Ui_MainWindow(object):
         MainWindow.setWindowTitle(QCoreApplication.translate("MainWindow", u"MainWindow", None))
         self.musicasButton.setText(QCoreApplication.translate("MainWindow", u"Musicas", None))
         self.playlistButton.setText(QCoreApplication.translate("MainWindow", u"Playlist", None))
-        self.playButton.setText(QCoreApplication.translate("MainWindow", u"Retomar", None))
-        self.menuFile.setTitle(QCoreApplication.translate("MainWindow", u"M\u00fasicas", None))
+        self.playButton.setText(QCoreApplication.translate("MainWindow", u"Pausar", None))
         self.menuExportar.setTitle(QCoreApplication.translate("MainWindow", u"Exportar", None))
     # retranslateUi
 
