@@ -108,3 +108,51 @@ def test_MudarNomePlaylistInexistente():
     dicionarioPlaylists = {}
     resultado = mudaNomePlaylist("Playlist inexistente", "Nome Qualquer", dicionarioPlaylists)
     assert resultado == {'codigo_retorno': -1, 'mensagem': 'Playlist não existe'}
+
+def test_escreveJsonPlaylistSucesso():
+    dicionarioPlaylists = {}
+    criarPlaylist("Minha Playlist", dicionarioPlaylists)
+    adicionarMusicaNaPlaylist("Minha Playlist", "Desconhecido", "11 - Max Coveri - Running in the 90's", dicionarioPlaylists)
+    resultado = escreveJsonPlaylists("test", dicionarioPlaylists)
+    assert resultado == {'codigo_retorno': 1, 'mensagem': "Arquivo escrito com sucesso."}
+    caminho_arquivo = "src/test/jsons/playlists.json"
+    assert os.path.exists(caminho_arquivo), "O arquivo não foi criado."
+    os.remove(caminho_arquivo)
+    assert not os.path.exists(caminho_arquivo), "O arquivo não foi apagado."
+
+def test_escreveJsonPlaylistFalha():
+    resultado = escreveJsonPlaylists("test", None)
+    assert resultado == {"codigo_retorno": 0, "mensagem": "Erro ao escrever o arquivo, dicionário inexistente."}
+    caminho_arquivo = "src/test/jsons/playlists.json"
+    assert not os.path.exists(caminho_arquivo), "O arquivo foi criado."
+
+def test_leJsonPlaylistSucesso():
+    dicionarioPlaylists = {}
+    criarPlaylist("Minha Playlist", dicionarioPlaylists)
+    adicionarMusicaNaPlaylist("Minha Playlist", "Desconhecido", "11 - Max Coveri - Running in the 90's", dicionarioPlaylists)
+    escreveJsonPlaylists("test", dicionarioPlaylists)
+    excluirPlaylist("Minha Playlist", dicionarioPlaylists)
+    resultado = leJsonPlaylists("test", dicionarioPlaylists)
+    assert resultado == {'codigo_retorno': 1, 'mensagem': "Músicas obtidas com sucesso do arquivo."}
+    assert verificarMusicaNaPlaylist("Minha Playlist", "Desconhecido", "11 - Max Coveri - Running in the 90's", dicionarioPlaylists)['codigo_retorno'] == 1
+    caminho_arquivo = "src/test/jsons/playlists.json"
+    os.remove(caminho_arquivo)
+    assert not os.path.exists(caminho_arquivo), "O arquivo não foi apagado."
+
+def test_leJsonPlaylistFalha():
+    caminho_arquivo = "src/test/jsons/playlists.json"
+    assert not os.path.exists(caminho_arquivo), "Arquivo existente antes da execução do teste"
+    resultado = leJsonPlaylists("test")
+    assert resultado == {"codigo_retorno": 0, "mensagem": "Erro ao ler o arquivo"}
+
+def test_obtemPlaylistsSucesso():
+    dicionarioPlaylists = {}
+    criarPlaylist("Minha Playlist", dicionarioPlaylists)
+    resultado = obterNomesPlaylists(dicionarioPlaylists)
+    assert resultado["codigo_retorno"] == 1
+    assert resultado["mensagem"] == "Nomes das playlists obtidos com sucesso."
+    assert len(resultado["nomes"]) == 1
+
+def test_obtemPlaylistsFalha():
+    resultado = obterNomesPlaylists(None)
+    assert resultado == {"codigo_retorno": 0, "nomes": None, "mensagem": "Falha ao obter nomes das playlists"}

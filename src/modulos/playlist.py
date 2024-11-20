@@ -117,16 +117,26 @@ def mudaNomePlaylist(nomePlaylist:str, novoNome:str, dicionarioPlaylists = dicio
         }
     return resultado
 
-def escreveJsonPlaylists(dicionarioPlaylists = dicionarioPlaylists):
+def escreveJsonPlaylists(ambiente, dicionarioPlaylists = dicionarioPlaylists):
+    if ambiente == "test":
+        caminhoPasta = "src/test/jsons"
+    else:
+        caminhoPasta = "src/jsons"
+
     resultado = {
         "codigo_retorno": 0,
         "mensagem": "Erro ao escrever o arquivo."
     }
+
+    if not dicionarioPlaylists:
+        return resultado
+    
     try:
-        os.makedirs("src/jsons", exist_ok=True)
+        os.makedirs(caminhoPasta, exist_ok=True)
         dicionarioPlaylists = converteChavesParaString(dicionarioPlaylists)
+        caminhoArquivo = os.path.join(caminhoPasta, "playlists.json")
         
-        with open("src/jsons/playlists.json", "w", encoding="utf-8") as arquivo:
+        with open(caminhoArquivo, "w", encoding="utf-8") as arquivo:
             json.dump(dicionarioPlaylists, arquivo, ensure_ascii=False, indent=4)
             resultado["codigo_retorno"] = 1
             resultado["mensagem"] = "Arquivo escrito com sucesso."
@@ -134,23 +144,31 @@ def escreveJsonPlaylists(dicionarioPlaylists = dicionarioPlaylists):
         pass
     return resultado
 
-def leJsonPlaylists(dicionarioPlaylists = dicionarioPlaylists):
+def leJsonPlaylists(ambiente, dicionarioPlaylists = dicionarioPlaylists):
+    if ambiente == "test":
+        caminhoPasta = "src/test/jsons"
+    else:
+        caminhoPasta = "src/jsons"
+
     resultado = {
         "codigo_retorno": 0,
         "mensagem": "Erro ao ler o arquivo"
     }
+
+    caminhoArquivo = os.path.join(caminhoPasta, "playlists.json")
+
     try:
-        with open("src/jsons/playlists.json", "r", encoding="utf-8") as arquivo:
+        with open(caminhoArquivo, "r", encoding="utf-8") as arquivo:
             leituraJson = json.load(arquivo)
             dicionarioPlaylists.clear()
             dicionarioPlaylists.update(reverterChavesParaTipoOriginal(leituraJson))
             resultado["codigo_retorno"] = 1
-            resultado["mensagem"] = "Músicas obtidas com sucesso do arquivo"
+            resultado["mensagem"] = "Músicas obtidas com sucesso do arquivo."
     except Exception as e:
         pass
     return resultado
 
 def obterNomesPlaylists(dicionarioPlaylists=dicionarioPlaylists):
     if dicionarioPlaylists:
-        return {"codigo_retorno":1, "nomes": dicionarioPlaylists.keys()}
-    return {"codigo_retorno": 0, "nomes": None}
+        return {"codigo_retorno": 1, "nomes": dicionarioPlaylists.keys(), "mensagem": "Nomes das playlists obtidos com sucesso."}
+    return {"codigo_retorno": 0, "nomes": None, "mensagem": "Falha ao obter nomes das playlists"}
