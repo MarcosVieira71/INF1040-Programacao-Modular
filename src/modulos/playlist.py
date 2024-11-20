@@ -172,3 +172,8 @@ def obterNomesPlaylists(dicionarioPlaylists=dicionarioPlaylists):
     if dicionarioPlaylists:
         return {"codigo_retorno": 1, "nomes": dicionarioPlaylists.keys(), "mensagem": "Nomes das playlists obtidos com sucesso."}
     return {"codigo_retorno": 0, "nomes": None, "mensagem": "Falha ao obter nomes das playlists"}
+
+def obtemMusicasDePlaylist(nomePlaylist, dicionarioPlaylist=dicionarioPlaylists):
+    if nomePlaylist in dicionarioPlaylists.keys():
+        return {"codigo_retorno":1, "musicas": dicionarioPlaylists[nomePlaylist], "mensagem": "Músicas obtidas"}
+    return {"codigo_retorno":0, "musicas":None, "mensagem":"Não foi possível obter as músicas da playlist"}

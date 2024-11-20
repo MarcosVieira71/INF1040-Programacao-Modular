@@ -14,7 +14,6 @@ class MenuContextoMusicas(QMenu):
     def opcaoIndexValido(self, autor, musica, index):
         tocarMusica = QAction("Tocar", self.parent())
         deletarMusica = QAction("Excluir", self.parent())
-        addToPlaylistAction = QAction("Adicionar a Playlist", self.parent())
         adicionarAvaliacao = QAction("Adicionar avaliação", self.parent())
 
         tocarMusica.triggered.connect(lambda: self.parent().acaoTocarMusica(index))
@@ -24,7 +23,6 @@ class MenuContextoMusicas(QMenu):
         self.addAction(tocarMusica)
         self.addAction(deletarMusica)
         self.addSeparator()  
-        self.addAction(addToPlaylistAction)
         self.addSeparator()
         self.addAction(adicionarAvaliacao)
         if verificaAvaliacao(autor, musica)["codigo_retorno"]: self.setupAvaliacoesOptions(self, adicionarAvaliacao, index)

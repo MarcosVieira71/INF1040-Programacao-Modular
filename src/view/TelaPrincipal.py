@@ -1,5 +1,6 @@
 from modulos.musica import escreveJsonMusicas
 from modulos.avaliacoes import escreveJsonAvaliacoes, exportarAvaliacoes
+from modulos.playlist import escreveJsonPlaylists
 
 from view.Player import Player
 from view.assets.ui.TelaPrincipal_ui import Ui_MainWindow
@@ -33,6 +34,7 @@ class TelaPrincipal(QMainWindow, Ui_MainWindow):
     def closeEvent(self, event):
         print("Avaliacoes:", escreveJsonAvaliacoes("app")["mensagem"])
         print("Musicas:", escreveJsonMusicas("app")["mensagem"])
+        print("Playlist", escreveJsonPlaylists("app")["mensagem"])
         super().closeEvent(event)
 
     def abrirDialogo(self):

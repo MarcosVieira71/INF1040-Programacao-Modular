@@ -4,9 +4,9 @@ from PySide6.QtWidgets import QListView, QWidget, QVBoxLayout, QDialog, QMessage
 from PySide6.QtGui import QStandardItem, QStandardItemModel
 from PySide6.QtCore import Qt, QPoint
 
-from modulos.playlist import criarPlaylist, mudaNomePlaylist, excluirPlaylist, adicionarMusicaNaPlaylist, obterNomesPlaylists, dicionarioPlaylists
+from modulos.playlist import criarPlaylist, mudaNomePlaylist, excluirPlaylist, obterNomesPlaylists, dicionarioPlaylists
 from view.MenuContextoPlaylist import MenuContextoPlaylist
-from view.TelaMusicasParaAdicionar import TelaMusicasParaAdicionar
+from view.TelaComboMusicas import TelaComboMusicas
 
 class TelaPlaylist(QWidget):
     def __init__(self, player):
@@ -35,12 +35,12 @@ class TelaPlaylist(QWidget):
     def preencheModel(self):
         resultadoObterPlaylists = obterNomesPlaylists()
         if resultadoObterPlaylists["codigo_retorno"]:
-            playlists = resultadoObterPlaylists["playlists"]
+            playlists = resultadoObterPlaylists["nomes"]
             for playlist in playlists:
                 self.adicionaItemModel(playlist)
 
     def adicionaItemModel(self, playlist):
-        item = QStandardItem(f"Playlist: {playlist['nome']}")
+        item = QStandardItem(f"Playlist: {playlist}")
         item.setFlags(item.flags() & ~Qt.ItemFlag.ItemIsEditable)
         self.model.appendRow(item)
 
@@ -55,7 +55,7 @@ class TelaPlaylist(QWidget):
         if ok and nomeNovaPlaylist:
             resultadoCriar = criarPlaylist(nomeNovaPlaylist)
             if resultadoCriar["codigo_retorno"]:
-                self.adicionaItemModel({"nome": nomeNovaPlaylist})
+                self.adicionaItemModel(f"{nomeNovaPlaylist}")
             QMessageBox.information(self, "Aviso", resultadoCriar["mensagem"])
 
     def acaoAtualizarNome(self, index):
@@ -74,19 +74,18 @@ class TelaPlaylist(QWidget):
             self.model.removeRow(index.row())
         QMessageBox.information(self, "Aviso", resultadoExcluir["mensagem"])
 
-    # def acaoVisualizarPlaylist(self, nomePlaylist):
-    #     resultadoVisualizar = visualizarPlaylist(nomePlaylist)
-    #     if resultadoVisualizar["codigo_retorno"]:
-    #         dialog = QDialog(self)
-    #         dialog.setWindowTitle(f"Playlist: {nomePlaylist}")
-    #         layout = QVBoxLayout(dialog)
-    #         for musica in resultadoVisualizar["musicas"]:
-    #             layout.addWidget(QLabel(f"{musica['nome']} - {musica['autor']}"))
-    #         dialog.setLayout(layout)
-    #         dialog.exec()
-    #     else:
-    #         QMessageBox.warning(self, "Aviso!", resultadoVisualizar["mensagem"])
+    def acaoVisualizarPlaylist(self, nomePlaylist):
+        dialog = QDialog(self)
+        dialog.setWindowTitle(f"Playlist: {nomePlaylist}")
+        layout = QVBoxLayout(dialog)
+        for musica in :
+            layout.addWidget(QLabel(f"{musica['nome']} - {musica['autor']}"))
+        dialog.setLayout(layout)
+        dialog.exec()
 
-    def acaoAdicionarMusicaPlaylist(self, nomePlaylist):
-        telaAdicao = TelaMusicasParaAdicionar(nomePlaylist, self)
-        
+
+    def acaoAdicionarMusicaPlaylist(self, index):
+        if hasattr(self,"telaAdicao"): self.telaAdicao.close()
+        nomePlaylist = self.extraiNomeDoModel(index)
+        self.telaAdicao = TelaComboMusicas(nomePlaylist)
+        self.telaAdicao.show()
