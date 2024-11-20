@@ -9,6 +9,7 @@
 ################################################################################
 
 from view.TelaMusica import TelaMusica
+from view.TelaPlaylist import  TelaPlaylist
 
 from PySide6.QtCore import (QCoreApplication, QDate, QDateTime, QLocale,
     QMetaObject, QObject, QPoint, QRect,
@@ -67,7 +68,7 @@ class Ui_MainWindow(object):
         self.musica = TelaMusica(MainWindow.player)
         self.musica.setObjectName(u"musica")
         self.stackedWidget.addWidget(self.musica)
-        self.playlist = QWidget()
+        self.playlist = TelaPlaylist(MainWindow.player)
         self.playlist.setObjectName(u"playlist")
         self.stackedWidget.addWidget(self.playlist)
         self.horizontalSlider = QSlider(self.centralwidget)

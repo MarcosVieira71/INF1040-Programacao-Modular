@@ -111,15 +111,16 @@ def test_escreveJsonFalha():
  
 def test_leJsonSucesso():
     from modulos.musica import adicionarMusica, excluirMusica
-
+    dicionarioAvaliacoes = {}
     adicionarMusica("src/test/musicas_teste/08 - Leslie Parrish - Remember Me.mp3")
     criarAvaliacao("Desconhecido", "08 - Leslie Parrish - Remember Me", 5, "Ótima Música!")
     escreveJsonAvaliacoes("test")
     excluirAvaliacao("Desconhecido", "08 - Leslie Parrish - Remember Me")
     excluirMusica("Desconhecido", "08 - Leslie Parrish - Remember Me")
-    resultado = leJsonAvaliacoes("test")
+
+    resultado = leJsonAvaliacoes("test", dicionarioAvaliacoes)
     assert resultado == {"codigo_retorno": 1, "mensagem":"Avaliações obtidas com sucesso"}
-    assert geraStringAvaliacao("Desconhecido", "08 - Leslie Parrish - Remember Me")["codigo_retorno"] == 1
+    assert geraStringAvaliacao("Desconhecido", "08 - Leslie Parrish - Remember Me", dicionarioAvaliacoes)["codigo_retorno"] == 1
     caminho_arquivo = "src/test/jsons/avaliacoes.json"
     os.remove(caminho_arquivo)
     assert not os.path.exists(caminho_arquivo), "O arquivo não foi apagado."

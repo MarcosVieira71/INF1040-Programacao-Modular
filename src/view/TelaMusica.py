@@ -3,7 +3,7 @@ import re
 from modulos.musica import adicionarMusica, excluirMusica, encontrarMusica, obtemMusicas
 from modulos.avaliacoes import criarAvaliacao, geraStringAvaliacao, excluirAvaliacao
 from view.DialogoAvaliacoes import DialogoAvaliacoes
-from view.MenuContextoMusicas import MenuContexto
+from view.MenuContextoMusicas import MenuContextoMusicas
 from view.PerguntaAtualizarAvaliacao import PerguntaAtualizarAvaliacao
 
 from PySide6.QtWidgets import QListView, QWidget, QVBoxLayout, QFileDialog, QDialog, QMessageBox, QPlainTextEdit
@@ -24,7 +24,7 @@ class TelaMusica(QWidget):
         self.preencheModel()
 
     def showContextMenu(self, position: QPoint):
-        contextMenu = MenuContexto(self)
+        contextMenu = MenuContextoMusicas(self)
         index = self.listView.indexAt(position)
         if index.isValid():
             autor, musica = self.extraiNomesDoModel(index)

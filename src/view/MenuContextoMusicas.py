@@ -2,7 +2,7 @@ from modulos.avaliacoes import verificaAvaliacao
 from PySide6.QtWidgets import QMenu
 from PySide6.QtGui import QAction
 
-class MenuContexto(QMenu):
+class MenuContextoMusicas(QMenu):
     def __init__(self, telaMusicas):
         super().__init__(parent=telaMusicas)
 
