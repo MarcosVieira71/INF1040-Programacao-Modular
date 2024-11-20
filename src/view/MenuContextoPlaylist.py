@@ -20,7 +20,7 @@ class MenuContextoPlaylist(QMenu):
         deletarPlaylist.triggered.connect(lambda: self.parent().acaoExcluirPlaylist(index))
         addMusicaToPlaylist.triggered.connect(lambda: self.parent().acaoAdicionarMusicaPlaylist(index))
         alterarNomePlaylist.triggered.connect(lambda: self.parent().acaoAtualizarNome(index))
-        visualizarPlaylist.triggered.connect(lambda:self.parent().visualizarPlaylist(index))
+        visualizarPlaylist.triggered.connect(lambda:self.parent().acaoVisualizarPlaylist(index))
 
         self.addAction(deletarPlaylist)
         self.addAction(addMusicaToPlaylist)

@@ -1,6 +1,6 @@
 from modulos.avaliacoes import leJsonAvaliacoes
 from modulos.musica import leJsonMusicas
-
+from modulos.playlist import leJsonPlaylists 
 from view.TelaPrincipal import TelaPrincipal
 
 from PySide6.QtWidgets import QApplication
@@ -11,6 +11,8 @@ class ProgramaPrincipal(QApplication):
         super().__init__()
         print("Avaliacoes:", leJsonAvaliacoes("app")["mensagem"])
         print("Musicas:", leJsonMusicas("app")["mensagem"])
+        print("Playlist:", leJsonPlaylists("app")["mensagem"])
+        
         self.telaPrincipal = TelaPrincipal()
 
 if __name__ == "__main__":

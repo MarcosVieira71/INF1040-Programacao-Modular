@@ -25,7 +25,7 @@ def adicionarMusicaNaPlaylist(nomePlaylist:str, nomeAutor:str, nomeMusica:str, d
     if nomePlaylist in dicionarioPlaylists:
         musica_existe = verificaMusica(nomeAutor, nomeMusica)
         if musica_existe["codigo_retorno"] == 1:
-            dicionarioPlaylists[nomePlaylist].append((nomeAutor,nomeMusica))
+            dicionarioPlaylists[nomePlaylist].append([nomeAutor,nomeMusica])
             resultado = {
             'codigo_retorno': 1,
             'mensagem': "Música adicionada com sucesso"
@@ -44,8 +44,8 @@ def adicionarMusicaNaPlaylist(nomePlaylist:str, nomeAutor:str, nomeMusica:str, d
 
 def excluirMusicaDaPlaylist(nomePlaylist:str, nomeAutor:str, nomeMusica:str, dicionarioPlaylists = dicionarioPlaylists):
     if nomePlaylist in dicionarioPlaylists:
-        if (nomeAutor,nomeMusica) in dicionarioPlaylists[nomePlaylist]:
-            dicionarioPlaylists[nomePlaylist].remove((nomeAutor,nomeMusica))
+        if [nomeAutor,nomeMusica] in dicionarioPlaylists[nomePlaylist]:
+            dicionarioPlaylists[nomePlaylist].remove([nomeAutor,nomeMusica])
             resultado = {
             'codigo_retorno': 1, 
             'mensagem': 'Música removida da playlist'
@@ -64,7 +64,7 @@ def excluirMusicaDaPlaylist(nomePlaylist:str, nomeAutor:str, nomeMusica:str, dic
 
 def verificarMusicaNaPlaylist(nomePlaylist:str, nomeAutor:str, nomeMusica:str, dicionarioPlaylists=dicionarioPlaylists):
     if nomePlaylist in dicionarioPlaylists:
-        if (nomeAutor,nomeMusica) in dicionarioPlaylists[nomePlaylist]:
+        if [nomeAutor,nomeMusica] in dicionarioPlaylists[nomePlaylist]:
             resultado = {
             'codigo_retorno': 1, 
             'mensagem': 'Música existe na playlist'
@@ -172,3 +172,8 @@ def obterNomesPlaylists(dicionarioPlaylists=dicionarioPlaylists):
     if dicionarioPlaylists:
         return {"codigo_retorno": 1, "nomes": dicionarioPlaylists.keys(), "mensagem": "Nomes das playlists obtidos com sucesso."}
     return {"codigo_retorno": 0, "nomes": None, "mensagem": "Falha ao obter nomes das playlists"}
+
+def obtemMusicasDePlaylist(nomePlaylist, dicionarioPlaylists=dicionarioPlaylists):
+    if nomePlaylist in dicionarioPlaylists.keys():
+        return {"codigo_retorno":1, "musicas": dicionarioPlaylists[nomePlaylist], "mensagem": "Músicas obtidas"}
+    return {"codigo_retorno":0, "musicas":None, "mensagem":"Não foi possível obter as músicas da playlist"}
