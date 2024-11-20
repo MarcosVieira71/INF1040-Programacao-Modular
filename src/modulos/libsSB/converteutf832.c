@@ -1,6 +1,3 @@
-/* Julia Gomes Zibordi 2320934 3WA */
-/* Marcos Paulo Marinho Vieira 2320466 3WA*/
-
 #include <stdlib.h>
 #include <stdio.h>
 
