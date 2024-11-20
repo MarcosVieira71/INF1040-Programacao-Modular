@@ -21,8 +21,6 @@ def retornaLibPath():
     return os.path.join(os.path.dirname(__file__), "libsSB", lib), libcpath
 
 
-
-
 def converteUtf8_32Linux(caminho_entrada, caminho_saida):
     
     libPath, libcpath = retornaLibPath()
@@ -72,20 +70,10 @@ def geraTxtAvaliacoes(listaStrings, tipoCodificacao):
             os.remove(caminho_utf8)  
         else:
             return {"codigo_retorno": 0, "mensagem": resultadoConversao["mensagem"]}
-<<<<<<< HEAD
     elif tipoCodificacao == "UTF-8":
-        try: os.remove(caminho_utf32)
-        except: pass
-        resultadoConversao = resultado
-    else:
-        return {"codigo_retorno": -1, "mensagem": "Tipo de codificação inválido"}
-    return resultadoConversao
-=======
-    else:
-
         if os.path.exists(caminho_utf32): os.remove(caminho_utf32)  
-        resultadoConversao = resultado
-    return resultadoConversao
+    else: return {"codigo_retorno": -1, "mensagem": "Tipo de codificação inválido"}
+    return resultado
 
 def converteUtf8_32Windows(caminho_entrada, caminho_saida):
     libPath, libcpath = retornaLibPath()
@@ -117,4 +105,3 @@ def converteUtf8_32Windows(caminho_entrada, caminho_saida):
             libc.fclose(entrada_file)
         if saida_file:
             libc.fclose(saida_file)
->>>>>>> 77dad488952a1471bf089d33a351133990d0fb89

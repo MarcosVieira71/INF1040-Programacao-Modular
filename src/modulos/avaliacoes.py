@@ -113,8 +113,7 @@ def leJsonAvaliacoes(ambiente, dicionarioAvaliacoes=dicionarioAvaliacoes):
     
     resultado = {
         "codigo_retorno": 0,
-        "mensagem": "Erro ao ler o arquivo ",
-        "dicionario_avaliacoes": {}
+        "mensagem": "Erro ao ler o arquivo",
     }
     caminhoArquivo = os.path.join(caminhoPasta, "avaliacoes.json")
     try:
@@ -126,7 +125,6 @@ def leJsonAvaliacoes(ambiente, dicionarioAvaliacoes=dicionarioAvaliacoes):
 
             resultado["codigo_retorno"] = 1
             resultado["mensagem"] = "Avaliações obtidas com sucesso"
-            resultado["dicionario_avaliacoes"] = dicionarioAvaliacoes
     except Exception as e:
        pass
 
@@ -140,8 +138,12 @@ def escreveJsonAvaliacoes(ambiente, dicionarioAvaliacoes=dicionarioAvaliacoes):
     
     resultado={
         "codigo_retorno":0,
-        "mensagem":"Erro ao escrever o arquivo de avaliações",
+        "mensagem":"Erro ao escrever o arquivo, dicionário inexistente.",
     }
+
+    if not dicionarioAvaliacoes:
+        return resultado
+    
     try:
         os.makedirs(caminhoPasta, exist_ok=True)
         dicionarioAvaliacoes = converteChavesParaString(dicionarioAvaliacoes)
