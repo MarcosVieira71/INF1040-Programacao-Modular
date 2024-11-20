@@ -114,7 +114,7 @@ def test_leJsonSucesso():
     escreveJsonMusicas("test", dicionarioMusicas)
     excluirMusica("Desconhecido", "08 - Leslie Parrish - Remember Me.mp3", dicionarioMusicas)
     resultado = leJsonMusicas("test", dicionarioMusicas)
-    assert resultado == {"codigo_retorno": 1, "mensagem":"Músicas obtidas com sucesso do arquivo"}
+    assert resultado == {"codigo_retorno": 1, "mensagem": "Músicas obtidas com sucesso do arquivo"}
     assert encontrarMusica("Desconhecido", "08 - Leslie Parrish - Remember Me", dicionarioMusicas)["codigo_retorno"] == 1
     caminho_arquivo = "src/test/jsons/musicas.json"
     os.remove(caminho_arquivo)
