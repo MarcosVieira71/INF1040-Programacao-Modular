@@ -9,7 +9,7 @@ __all__ = ["criarPlaylist","adicionarMusicaNaPlaylist", "excluirMusicaDaPlaylist
            "mudaNomePlaylist", "escreveJsonPlaylists", "leJsonPlaylists","obterNomesPlaylists" ,"obtemMusicasDePlaylist"]
 
 # Descrição:
-# Essa função recebe como parâmetros o nome a ser utilizado para uma playlist (nomePlaylist). A função verifica se existe
+# Essa função recebe como parâmetros o nome a ser utilizado para uma playlist ('nomePlaylist') e um dicionário de playlists ('dicionarioPlaylists'). A função verifica se existe
 # uma entrada no 'dicionarioPlaylists' correspondente ao valor de nomePlaylist. Caso exista, retorna um dicionário com 'codigo_retorno' igual a 0
 # e uma mensagem indicando erro ao criar a playlist. Caso contrário, retorna um dicionário com 'codigo_retorno' igual a 1, uma mensagem indicando
 # sucesso ao criar a playlist, além de adicionar uma chave nova (nomePlaylist) no dicionário de playlists, sendo seu valor uma lista vazia.
@@ -48,7 +48,7 @@ def criarPlaylist(nomePlaylist:str, dicionarioPlaylists = dicionarioPlaylists):
 
 # Descrição:
 # Esta função recebe o nome de uma playlist (`nomePlaylist`), o nome do autor da música (`nomeAutor`), o nome da música 
-# (`nomeMusica`). A função verifica se a playlist existe no dicionário 
+# (`nomeMusica`) e o dicionário de playlists ('dicionarioPlaylists'). A função verifica se a playlist existe no dicionário 
 # e se a música especificada existe no sistema usando a função `verificaMusica` do módulo `musica`. Caso ambas as verificações 
 # sejam positivas, a música é adicionada à playlist. Caso contrário, a função retorna uma mensagem de erro específica. 
 # Retorna um dicionário com um `codigo_retorno` e uma mensagem correspondente ao sucesso ou falha da operação.
@@ -267,6 +267,31 @@ def mudaNomePlaylist(nomePlaylist:str, novoNome:str, dicionarioPlaylists = dicio
         }
     return resultado
 
+# Descrição:
+# Esta função salva o dicionário `dicionarioPlaylists` em um arquivo JSON no diretório apropriado, dependendo do ambiente 
+# fornecido. Se o ambiente for "test", o arquivo será salvo em "src/test/jsons"; caso contrário, será salvo em "src/jsons". 
+# A função converte as chaves do dicionário para strings antes de salvar. Retorna um dicionário indicando o sucesso ou falha da operação.
+
+# Acoplamento:
+# O parâmetro `ambiente` deve ser uma string para determinar o caminho do arquivo.
+# O parâmetro `dicionarioPlaylists` deve ser um dicionário cujas chaves podem ser convertidas para strings e valores seguem 
+# a estrutura de playlists (listas de tuplas de músicas).
+# Depende da função `converteChavesParaString` para ajustar as chaves do dicionário para um formato compatível com JSON.
+# O `codigo_retorno` pode ser:
+# - 1: Sucesso (arquivo salvo com sucesso).
+# - 0: Falha (dicionário inexistente ou erro ao salvar).
+
+# Condições de Acoplamento:
+# - A função depende do módulo `os` para criar o diretório se ele não existir.
+# - O arquivo deve ser gravável no sistema de arquivos.
+# - Caso o dicionário esteja vazio, a função retorna erro sem tentar gravar o arquivo.
+
+# Hipóteses:
+# - Assume-se que o dicionário fornecido é válido para escrita em JSON.
+
+# Interface com o Usuário:
+# - Retorna um dicionário com `codigo_retorno` e `mensagem` para informar o status da operação.
+
 def escreveJsonPlaylists(ambiente, dicionarioPlaylists = dicionarioPlaylists):
     if ambiente == "test":
         caminhoPasta = "src/test/jsons"
@@ -294,6 +319,30 @@ def escreveJsonPlaylists(ambiente, dicionarioPlaylists = dicionarioPlaylists):
         pass
     return resultado
 
+# Descrição:
+# Esta função lê um arquivo JSON contendo playlists e atualiza o dicionário `dicionarioPlaylists` com os dados obtidos. 
+# O ambiente (`ambiente`) define o caminho onde o arquivo JSON será buscado: "src/test/jsons" para testes ou "src/jsons" 
+# para o ambiente padrão. Caso a leitura do arquivo seja bem-sucedida, o dicionário é atualizado e a função retorna um 
+# dicionário indicando sucesso. Caso contrário, retorna uma mensagem de erro genérica.
+
+# Acoplamento:
+# - O parâmetro `ambiente` deve ser uma string para determinar o caminho do arquivo.
+# - O parâmetro `dicionarioPlaylists` é um dicionário que será atualizado com os dados lidos.
+# - Depende da função `reverterChavesParaTipoOriginal`, que converte as chaves do JSON de volta ao tipo esperado.
+# - O `codigo_retorno` pode ser:
+#   - 1: Sucesso (dicionário atualizado com dados do arquivo).
+#   - 0: Falha (erro ao ler o arquivo).
+
+# Condições de Acoplamento:
+# - Depende da estrutura do arquivo JSON, que deve ser um dicionário com playlists e suas músicas.
+# - Caso o arquivo esteja vazio ou inválido, a função retorna erro sem atualizar o dicionário.
+
+# Hipóteses:
+# - Assume-se que o arquivo JSON existe e está acessível no caminho especificado.
+
+# Interface com o Usuário:
+# - Retorna um dicionário com `codigo_retorno` e `mensagem` para informar o status da operação.
+
 def leJsonPlaylists(ambiente, dicionarioPlaylists = dicionarioPlaylists):
     if ambiente == "test":
         caminhoPasta = "src/test/jsons"
@@ -318,10 +367,54 @@ def leJsonPlaylists(ambiente, dicionarioPlaylists = dicionarioPlaylists):
         pass
     return resultado
 
+# Descrição:
+# Esta função obtém os nomes de todas as playlists disponíveis no dicionário `dicionarioPlaylists`. Caso existam playlists, 
+# retorna um dicionário com `codigo_retorno` 1, os nomes das playlists e uma mensagem de sucesso. Caso contrário, retorna 
+# um dicionário indicando falha.
+
+# Acoplamento:
+# - O parâmetro `dicionarioPlaylists` é um dicionário cujas chaves representam os nomes das playlists.
+# - O `codigo_retorno` pode ser:
+#   - 1: Sucesso (nomes das playlists obtidos).
+#   - 0: Falha (nenhuma playlist disponível).
+
+# Condições de Acoplamento:
+# - Depende da estrutura do `dicionarioPlaylists`, que deve ser um dicionário com nomes de playlists como chaves.
+# - A função retorna `None` no campo `nomes` caso o dicionário esteja vazio.
+
+# Hipóteses:
+# - Assume-se que `dicionarioPlaylists` segue a estrutura esperada.
+
+# Interface com o Usuário:
+# - Retorna um dicionário com `codigo_retorno`, `nomes` (lista ou `None`) e `mensagem` para informar o status da operação.
+
 def obterNomesPlaylists(dicionarioPlaylists=dicionarioPlaylists):
     if dicionarioPlaylists:
         return {"codigo_retorno": 1, "nomes": dicionarioPlaylists.keys(), "mensagem": "Nomes das playlists obtidos com sucesso."}
     return {"codigo_retorno": 0, "nomes": None, "mensagem": "Falha ao obter nomes das playlists"}
+
+# Descrição:
+# Esta função recupera todas as músicas de uma playlist específica (`nomePlaylist`) a partir do dicionário `dicionarioPlaylists`. 
+# Caso a playlist exista, retorna um dicionário com `codigo_retorno` 1, as músicas da playlist e uma mensagem de sucesso. 
+# Caso contrário, retorna um dicionário indicando falha.
+
+# Acoplamento:
+# - O parâmetro `nomePlaylist` é uma string que representa o nome da playlist a ser consultada.
+# - O parâmetro `dicionarioPlaylists` é um dicionário onde as chaves são os nomes das playlists e os valores são listas de músicas.
+# - O `codigo_retorno` pode ser:
+#   - 1: Sucesso (músicas obtidas com sucesso).
+#   - 0: Falha (playlist inexistente).
+
+# Condições de Acoplamento:
+# - Depende da estrutura do `dicionarioPlaylists`, que deve ser um dicionário onde as músicas de cada playlist são representadas 
+# como listas de tuplas (nomeAutor, nomeMusica).
+# - A função retorna `None` no campo `musicas` caso a playlist não exista.
+
+# Hipóteses:
+# - Assume-se que `dicionarioPlaylists` segue a estrutura esperada.
+
+# Interface com o Usuário:
+# - Retorna um dicionário com `codigo_retorno`, `musicas` (lista ou `None`) e `mensagem` para informar o status da operação.
 
 def obtemMusicasDePlaylist(nomePlaylist, dicionarioPlaylists=dicionarioPlaylists):
     if nomePlaylist in dicionarioPlaylists.keys():
