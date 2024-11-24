@@ -50,6 +50,44 @@ def converteUtf8_32Linux(caminho_entrada, caminho_saida):
         os.close(entrada_fd)
         os.close(saida_fd)
 
+# Descrição:
+# A função `geraTxtAvaliacoes` é responsável por gerar um arquivo de texto contendo avaliações formatadas a partir 
+# de uma lista de strings (`listaStrings`). Ela permite a exportação em diferentes formatos de codificação, especificados 
+# pelo parâmetro `tipoCodificacao`. Se a codificação for "UTF-32", o arquivo é convertido de UTF-8 para UTF-32 usando 
+# métodos específicos para o sistema operacional (Windows ou Linux). Caso a codificação seja "UTF-8", apenas o arquivo 
+# UTF-8 é mantido. Para tipos de codificação inválidos, a função retorna um código de erro e uma mensagem correspondente.
+
+# Acoplamento:
+# - A função depende de funções auxiliares `converteUtf8_32Windows` e `converteUtf8_32Linux` para realizar a conversão de UTF-8 para UTF-32.
+# - Depende do módulo `os` para manipular arquivos e diretórios, e de `platform` para identificar o sistema operacional.
+# - Utiliza as funções `os.makedirs`, `os.path.join`, `os.remove`, e `os.path.exists` para manipulação de arquivos e pastas.
+
+# Condições de Acoplamento:
+# - A lista de strings (`listaStrings`) deve conter os textos formatados das avaliações.
+# - O parâmetro `tipoCodificacao` deve ser uma string com valores válidos ("UTF-8" ou "UTF-32").
+# - O diretório de saída deve estar acessível para escrita.
+
+# Hipóteses:
+# - O diretório `../relatorios` pode ser criado se não existir.
+# - A lista de strings contém apenas dados que podem ser gravados em arquivos de texto.
+# - As funções auxiliares de conversão (UTF-8 para UTF-32) funcionam conforme esperado.
+
+# Interface com o Usuário:
+# - A função retorna um dicionário contendo:
+#   - `codigo_retorno`: 1 para sucesso, 0 para erro, e -1 para tipo de codificação inválido.
+#   - `mensagem`: uma descrição textual do status da operação, como "Relatório de avaliações gerado com sucesso" ou mensagens de erro.
+
+# Exemplos de Retorno:
+# - {"codigo_retorno": 1, "mensagem": "Relatório de avaliações gerado com sucesso"} (sucesso na exportação)
+# - {"codigo_retorno": 0, "mensagem": "Erro na conversão UTF-8 para UTF-32"} (erro na conversão de codificação)
+# - {"codigo_retorno": -1, "mensagem": "Tipo de codificação inválido"} (tipo de codificação não suportado)
+
+# Considerações:
+# - A função garante que o diretório `../relatorios` exista antes de gravar os arquivos.
+# - Arquivos temporários, como o arquivo UTF-8 intermediário em uma conversão para UTF-32, são removidos para evitar acúmulo de lixo.
+# - Se um tipo de codificação inválido for fornecido, nenhum arquivo será criado.
+
+
 def geraTxtAvaliacoes(listaStrings, tipoCodificacao):
     resultado = {"codigo_retorno": 1, "mensagem": "Relatório de avaliações gerado com sucesso"}
     pastaRelatorios = os.path.join(os.path.dirname(__file__), "../relatorios")
