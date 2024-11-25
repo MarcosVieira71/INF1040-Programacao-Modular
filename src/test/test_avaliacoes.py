@@ -132,23 +132,25 @@ def test_leJsonFalha():
     assert resultado == {"codigo_retorno": 0, "mensagem": "Erro ao ler o arquivo"}, "Falha: Retorno esperado para leitura de arquivo inexistente não ocorreu."
 
 def test_exportarAvaliacoesSucesso():
-    from modulos.musica import adicionarMusica
-    dicionarioAvaliacoes = {}
+    from modulos.musica import adicionarMusica, excluirMusica
     adicionarMusica("src/test/musicas_teste/08 - Leslie Parrish - Remember Me.mp3")
-    criarAvaliacao("Desconhecido", "08 - Leslie Parrish - Remember Me", 5, "Ótima Música!")
-    resultado = exportarAvaliacoes("utf-8", dicionarioAvaliacoes)
+    criarAvaliacao("Desconhecido", "08 - Leslie Parrish - Remember Me", 5, "Ótima música")
+    resultado = exportarAvaliacoes("UTF-8")
+    excluirAvaliacao("Desconhecido", "08 - Leslie Parrish - Remember Me")
+    excluirMusica("Desconhecido", "08 - Leslie Parrish - Remember Me")
     assert resultado == {'codigo_retorno': 1, 'mensagem': 'Arquivo de avaliações escrito com sucesso'}, "Falha: Retorno esperado para exportação correta das avaliações não ocorreu."
 
 def test_exportarAvaliacoesErroFormato():
-    from modulos.musica import adicionarMusica
+    from modulos.musica import adicionarMusica, excluirMusica
     dicionarioAvaliacoes = {}
     adicionarMusica("src/test/musicas_teste/08 - Leslie Parrish - Remember Me.mp3")
-    criarAvaliacao("Desconhecido", "08 - Leslie Parrish - Remember Me", 5, "Ótima Música!")
-    resultado = exportarAvaliacoes("utf-16", dicionarioAvaliacoes)
-    assert resultado == {'codigo_retorno': 0, 'mensagem': 'Erro ao escrever o arquivo de avaliações'}, "Falha: Retorno esperado para tipo de codificação inexistente não ocorreu."
+    criarAvaliacao("Desconhecido", "08 - Leslie Parrish - Remember Me", 5, "Ótima Música!", dicionarioAvaliacoes)
+    resultado = exportarAvaliacoes("UTF-16", dicionarioAvaliacoes)
+    excluirMusica("Desconhecido", "08 - Leslie Parrish - Remember Me")
+    assert resultado == {"codigo_retorno": -1, "mensagem": "Erro no formato de texto"}, "Falha: Retorno esperado para tipo de codificação inexistente não ocorreu."
 
 def test_exportarAvaliacoesErroDicionario():
     dicionarioAvaliacoes = {}
-    resultado = exportarAvaliacoes("utf-8", dicionarioAvaliacoes)
-    assert resultado == {"codigo_retorno": -1, "mensagem": "Avaliação inexistente"}, "Falha: Retorno esperado para dicionário inexistente não ocorreu."
+    resultado = exportarAvaliacoes("UTF-8", dicionarioAvaliacoes)
+    assert resultado == {"codigo_retorno": 0, "mensagem": "Erro ao escrever o arquivo de avaliações"}, "Falha: Retorno esperado para dicionário inexistente não ocorreu."
 
