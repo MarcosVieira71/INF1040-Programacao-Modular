@@ -1,54 +1,71 @@
-from PySide6.QtMultimedia import QMediaPlayer, QAudioOutput
-from PySide6.QtCore import QUrl
+import pygame
+from PySide6.QtCore import QTimer
 
-class Player(QMediaPlayer):
+class Player:
     def __init__(self, telaPrincipal):
-        super().__init__(parent=telaPrincipal)
-        self.audio_output = QAudioOutput(self.parent())
-        self.setAudioOutput(self.audio_output)
-        self.mediaStatusChanged.connect(self.statusPlayer)
+        pygame.mixer.init()
+        self.telaPrincipal = telaPrincipal
+        self.is_playing = False
+        self.is_paused = False
 
+        # Flag para verificar se o slider foi movido pelo usuário
+        self.slider_being_moved = False
+
+        # Timer para atualizar o slider
+        self.timer = QTimer(self.telaPrincipal)
+        self.timer.timeout.connect(self.updateSlider)
+        self.timer.start(100)  # Atualiza o slider a cada 100ms
+
+        self.song_duration = 0  # Duração total da música em segundos (a ser configurada)
 
     def setSlider(self):
-        self.slider = self.parent().horizontalSlider
-        self.playButton = self.parent().playButton
-        self.positionChanged.connect(self.updateSlider)
-        self.durationChanged.connect(self.setRangeSlider)
+        self.slider = self.telaPrincipal.horizontalSlider
+        self.playButton = self.telaPrincipal.playButton
+        self.volumeSlider = self.telaPrincipal.volumeSlider
         self.playButton.clicked.connect(self.togglePlayPause)
-        self.slider.sliderMoved.connect(self.setPosicao)
-
-        self.volumeSlider = self.parent().volumeSlider  # Referência ao slider vertical
-        self.volumeSlider.setRange(0, 100)
-        self.volumeSlider.setValue(self.audio_output.volume() * 100)  # Inicializa com o volume atual
+        self.slider.sliderMoved.connect(self.setPosicao)  # Movimentação manual do slider
         self.volumeSlider.valueChanged.connect(self.setVolume)
 
     def tocaMusica(self, filepath):
-        self.setSource(QUrl.fromLocalFile(filepath))
-        self.play()
-
-    def setVolume(self, value):
-
-        self.audio_output.setVolume(value / 100)  # Converte para valor entre 0.0 e 1.0
-
-
-    def updateSlider(self, position):
-        self.slider.setValue(position)
-
-    def setRangeSlider(self, duration):
-        self.slider.setRange(0, duration)
-
-    def setPosicao(self, position):
-        self.setPosition(position)
-
-    def statusPlayer(self, status):
-        if status == QMediaPlayer.EndOfMedia:
-            self.setPosition(0)
-            self.slider.setValue(0)
+        """Carrega e toca a música."""
+        pygame.mixer.music.load(filepath)
+        pygame.mixer.music.play()
+        self.is_playing = True
         
+        # Defina a duração da música
+        self.song_duration = pygame.mixer.Sound(filepath).get_length()  # Obtém a duração em segundos
+        self.slider.setRange(0, int(self.song_duration))  # Define o intervalo do slider
+
     def togglePlayPause(self):
-        if self.playbackState() == QMediaPlayer.PlayingState:
-            self.pause()
+        """Alterna entre play e pause."""
+        if self.is_playing:
+            pygame.mixer.music.pause()
             self.playButton.setText("Retomar")
         else:
-            self.play()
+            pygame.mixer.music.unpause()
             self.playButton.setText("Pausar")
+        self.is_playing = not self.is_playing
+
+    def setVolume(self, value):
+        """Ajusta o volume do player de áudio."""
+        pygame.mixer.music.set_volume(value / 100)
+
+    def setPosicao(self):
+        """Atualiza a posição da música de acordo com a posição do slider."""
+        if not self.slider_being_moved:
+            # Atualize a música para a posição do slider
+            pygame.mixer.music.set_pos(self.slider.value())
+
+    def updateSlider(self):
+        """Atualiza a posição do slider enquanto a música está tocando."""
+        if not self.slider_being_moved:  # Só atualiza o slider se o usuário não estiver movendo
+            current_pos = pygame.mixer.music.get_pos() / 1000  # Posicionamento atual da música (em segundos)
+            self.slider.setValue(int(current_pos))
+
+    def sliderMoving(self):
+        """Marca que o usuário está movendo o slider."""
+        self.slider_being_moved = True
+
+    def sliderReleased(self):
+        """Marca que o usuário parou de mover o slider."""
+        self.slider_being_moved = False
