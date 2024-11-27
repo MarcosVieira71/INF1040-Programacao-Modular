@@ -115,12 +115,6 @@ def test_escreveJsonSucesso():
     os.remove(caminho_arquivo)
     assert not os.path.exists(caminho_arquivo), "Falha: Arquivo JSON não foi apagado após remoção."
 
-def test_escreveJsonFalha():
-    resultado = escreveJsonMusicas("test", None)
-    assert resultado == {"codigo_retorno": 0, "mensagem": "Erro ao escrever o arquivo, dicionário inexistente."}, "Falha: Retorno esperado para dicionário inexistente não ocorreu."
-    caminho_arquivo = "src/test/jsons/musicas.json"
-    assert not os.path.exists(caminho_arquivo), "Falha: Arquivo JSON foi criado indevidamente."
-
 def test_leJsonSucesso():
     dicionarioMusicas = {}
     adicionarMusica("src/test/musicas_teste/08 - Leslie Parrish - Remember Me.mp3", dicionarioMusicas)

@@ -118,12 +118,6 @@ def test_escreveJsonPlaylistSucesso():
     os.remove(caminho_arquivo)
     assert not os.path.exists(caminho_arquivo), "Falha: Arquivo JSON não foi apagado após remoção."
 
-def test_escreveJsonPlaylistFalha():
-    resultado = escreveJsonPlaylists("test", None)
-    assert resultado == {"codigo_retorno": 0, "mensagem": "Erro ao escrever o arquivo, dicionário inexistente."}, "Falha: Retorno esperado ao escrever dicionário inexistente não ocorreu."
-    caminho_arquivo = "src/test/jsons/playlists.json"
-    assert not os.path.exists(caminho_arquivo), "Falha: Arquivo JSON foi criado indevidamente."
-
 def test_leJsonPlaylistSucesso():
     from modulos.musica import adicionarMusica, excluirMusica
     dicionarioPlaylists = {}

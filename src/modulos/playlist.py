@@ -302,9 +302,6 @@ def escreveJsonPlaylists(ambiente, dicionarioPlaylists = dicionarioPlaylists):
         "codigo_retorno": 0,
         "mensagem": "Erro ao escrever o arquivo, dicionário inexistente."
     }
-
-    if not dicionarioPlaylists:
-        return resultado
     
     try:
         os.makedirs(caminhoPasta, exist_ok=True)

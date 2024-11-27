@@ -350,8 +350,6 @@ def escreveJsonMusicas(ambiente, dicionarioMusicas=dicionarioMusicas):
         "mensagem": "Erro ao escrever o arquivo, dicionário inexistente."
     }
     
-    if not dicionarioMusicas:
-        return resultado
 
     try:
         os.makedirs(caminhoPasta, exist_ok=True)

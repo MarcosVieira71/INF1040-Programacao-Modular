@@ -242,9 +242,6 @@ def escreveJsonAvaliacoes(ambiente, dicionarioAvaliacoes=dicionarioAvaliacoes):
         "codigo_retorno":0,
         "mensagem":"Erro ao escrever o arquivo, dicionário inexistente.",
     }
-
-    if not dicionarioAvaliacoes:
-        return resultado
     
     try:
         os.makedirs(caminhoPasta, exist_ok=True)
